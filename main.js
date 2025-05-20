@@ -6,13 +6,14 @@ const schedule = require('./schedule.js');
 var html = '';
 var script = '';
 
-anomalydata.anomalies.forEach(anomaly => {
-    html += `<h2 id="h2#${anomaly.series.handle}"><a id="#${anomaly.series.handle}${anomaly.subseries}" href="#${anomaly.series.handle}${anomaly.subseries}" class="header">${anomaly.series.name} ${anomaly.subseries} Sites (${anomaly.date.format("YYYY-MMM-DD")}: ${anomaly.sites})</a></h2><div id="vis${anomaly.series.handle}${anomaly.subseries}"></div>`;
-    script += `<script type="text/javascript">`;
-    script += `var ctr${anomaly.series.handle}${anomaly.subseries} = document.getElementById('vis${anomaly.series.handle}${anomaly.subseries}');`
-    script += `var grp${anomaly.series.handle}${anomaly.subseries} = new vis.DataSet([{ id: 'Design', content: 'Design'},{ id: 'Store', content: 'Store'},{ id: 'Production', content: 'Production'},{ id: 'Logistics', content: 'Logistics'}]);`
-    script += `var itms${anomaly.series.handle}${anomaly.subseries} = new vis.DataSet(`
+script += `
+var accordion = document.getElementById("accordion");
+var h2;
+var a;
+var div;
+`;
 
+anomalydata.anomalies.forEach(anomaly => {
     var events = [];
     schedule.swag.forEach(event => {
         start = anomaly.date.add(1 - event["start-days-before"], "day");
@@ -32,12 +33,31 @@ anomalydata.anomalies.forEach(anomaly => {
         };
         events.push(data);
     });
-    script += JSON.stringify(events)
-    script += `);`
-    script += `var opt${anomaly.series.handle}${anomaly.subseries} = {};`
-    script += `var tml${anomaly.series.handle}${anomaly.subseries} = new vis.Timeline(ctr${anomaly.series.handle}${anomaly.subseries}, itms${anomaly.series.handle}${anomaly.subseries}, grp${anomaly.series.handle}${anomaly.subseries}, opt${anomaly.series.handle}${anomaly.subseries});`
-    script += `</script>`
+
+    script += `
+    h2 = document.createElement("h2");
+    h2.id = "h2#${anomaly.series.handle}";
+    accordion.appendChild(h2);
+    a = document.createElement("a");
+    a.id = "#${anomaly.series.handle}${anomaly.subseries}";
+    a.href = "#${anomaly.series.handle}${anomaly.subseries}";
+    a.class = "header";
+    a.innerHTML = "${anomaly.series.name} ${anomaly.subseries} Sites (${anomaly.date.format("YYYY-MMM-DD")}: ${anomaly.sites})";
+    h2.appendChild(a);
+    div = document.createElement("div");;
+    div.id = "vis${anomaly.series.handle}${anomaly.subseries}";
+    accordion.appendChild(div);
+
+    var ctr${anomaly.series.handle}${anomaly.subseries} = document.getElementById('vis${anomaly.series.handle}${anomaly.subseries}')
+    var grp${anomaly.series.handle}${anomaly.subseries} = new vis.DataSet([{ id: 'Design', content: 'Design'},{ id: 'Store', content: 'Store'},{ id: 'Production', content: 'Production'},{ id: 'Logistics', content: 'Logistics'}])
+    var itms${anomaly.series.handle}${anomaly.subseries} = new vis.DataSet(
+        ${JSON.stringify(events)}
+    );
+    var opt${anomaly.series.handle}${anomaly.subseries} = {};
+    var tml${anomaly.series.handle}${anomaly.subseries} = new vis.Timeline(ctr${anomaly.series.handle}${anomaly.subseries}, itms${anomaly.series.handle}${anomaly.subseries}, grp${anomaly.series.handle}${anomaly.subseries}, opt${anomaly.series.handle}${anomaly.subseries});
+`
+    ;
+
 });
 
-console.log(html);
-console.log(script);
+fs.writeFileSync("./swagtimeline.js", script);

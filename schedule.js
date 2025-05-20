@@ -1,4 +1,4 @@
-[
+const swag = [
     {
         "id": 1
         , "handle": "RESEARCH"
@@ -204,3 +204,8 @@
         , "type": "range"
     }
 ]
+;
+
+module.exports = {
+    swag: swag
+}

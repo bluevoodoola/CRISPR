@@ -1,83 +1,20 @@
 const fs = require('fs');
-const dayjs = require('dayjs')
+const dayjs = require('dayjs');
+const anomalydata = require('./anomalies.js');
+const schedule = require('./schedule.js');
 
-var schedule = JSON.parse(fs.readFileSync('schedule.json'));
+var html = '';
+var script = '';
 
-var series = {
-    "2025Q2": {
-        "handle": "2025Q2"
-        , "name": "+Theta"
-    }
-    , "2025Q3": {
-        "handle": "2025Q3"
-        , "name": "+Delta"
-    }
-    , "2025Q4": {
-        "handle": "2025Q4"
-        , "name": "Unknown"
-    }
-};
-
-var anomalies = [
-    {
-        "date": dayjs(new Date('2025-05-17'))
-        , "series": series["2025Q2"]
-        , "subseries": "1"
-        , "sites": "Manila, Providence"
-    }
-    , {
-        "date": dayjs(new Date('2025-06-14'))
-        , "series": series["2025Q2"]
-        , "subseries": "2"
-        , "sites": "Perth, Chemnitz"
-    }
-    , {
-        "date": dayjs(new Date('2025-08-16'))
-        , "series": series["2025Q3"]
-        , "subseries": "1"
-        , "sites": "Malacca, Portland"
-    }
-    , {
-        "date": dayjs(new Date('2025-08-23'))
-        , "series": series["2025Q3"]
-        , "subseries": "2"
-        , "sites": "Gothenburg, Quebec"
-    }
-    , {
-        "date": dayjs(new Date('2025-09-20'))
-        , "series": series["2025Q3"]
-        , "subseries": "3"
-        , "sites": "Denpasar, Cambridge"
-    }
-    , {
-        "date": dayjs(new Date('2025-10-18'))
-        , "series": series["2025Q4"]
-        , "subseries": "1"
-        , "sites": "Valencia, São Paulo"
-    }
-    , {
-        "date": dayjs(new Date('2025-10-25'))
-        , "series": series["2025Q4"]
-        , "subseries": "2"
-        , "sites": "Wellington, Houston"
-    }
-    , {
-        "date": dayjs(new Date('2025-11-15'))
-        , "series": series["2025Q4"]
-        , "subseries": "3"
-        , "sites": "Taoyuan, The Hague"
-    }
-];
-
-anomalies.forEach(anomaly => {
-    console.log(`<h2 id="h2#${anomaly.series.handle}"><a id="#${anomaly.series.handle}${anomaly.subseries}" href="#${anomaly.series.handle}${anomaly.subseries}" class="header">${anomaly.series.name} ${anomaly.subseries} Sites (${anomaly.date.format("YYYY-MMM-DD")}: ${anomaly.sites})</a></h2><div id="vis${anomaly.series.handle}${anomaly.subseries}"></div>`);
-    console.log(`<script type="text/javascript">`);
-    console.log(`var ctr${anomaly.series.handle}${anomaly.subseries} = document.getElementById('vis${anomaly.series.handle}${anomaly.subseries}');`);
-    console.log(`var grp${anomaly.series.handle}${anomaly.subseries} = new vis.DataSet([{ id: 'Design', content: 'Design'},{ id: 'Store', content: 'Store'},{ id: 'Production', content: 'Production'},{ id: 'Logistics', content: 'Logistics'}]);`);
-    console.log(`var itms${anomaly.series.handle}${anomaly.subseries} = new vis.DataSet(`);
+anomalydata.anomalies.forEach(anomaly => {
+    html += `<h2 id="h2#${anomaly.series.handle}"><a id="#${anomaly.series.handle}${anomaly.subseries}" href="#${anomaly.series.handle}${anomaly.subseries}" class="header">${anomaly.series.name} ${anomaly.subseries} Sites (${anomaly.date.format("YYYY-MMM-DD")}: ${anomaly.sites})</a></h2><div id="vis${anomaly.series.handle}${anomaly.subseries}"></div>`;
+    script += `<script type="text/javascript">`;
+    script += `var ctr${anomaly.series.handle}${anomaly.subseries} = document.getElementById('vis${anomaly.series.handle}${anomaly.subseries}');`
+    script += `var grp${anomaly.series.handle}${anomaly.subseries} = new vis.DataSet([{ id: 'Design', content: 'Design'},{ id: 'Store', content: 'Store'},{ id: 'Production', content: 'Production'},{ id: 'Logistics', content: 'Logistics'}]);`
+    script += `var itms${anomaly.series.handle}${anomaly.subseries} = new vis.DataSet(`
 
     var events = [];
-    schedule.forEach(event => {
+    schedule.swag.forEach(event => {
         start = anomaly.date.add(1 - event["start-days-before"], "day");
         end = anomaly.date.add(1 - event["end-days-before"], "day");
         if (end.isSame(start)) {
@@ -95,9 +32,12 @@ anomalies.forEach(anomaly => {
         };
         events.push(data);
     });
-    console.log(JSON.stringify(events));
-    console.log(`);`);
-    console.log(`var opt${anomaly.series.handle}${anomaly.subseries} = {};`);
-    console.log(`var tml${anomaly.series.handle}${anomaly.subseries} = new vis.Timeline(ctr${anomaly.series.handle}${anomaly.subseries}, itms${anomaly.series.handle}${anomaly.subseries}, grp${anomaly.series.handle}${anomaly.subseries}, opt${anomaly.series.handle}${anomaly.subseries});`);
-    console.log(`</script>`);
+    script += JSON.stringify(events)
+    script += `);`
+    script += `var opt${anomaly.series.handle}${anomaly.subseries} = {};`
+    script += `var tml${anomaly.series.handle}${anomaly.subseries} = new vis.Timeline(ctr${anomaly.series.handle}${anomaly.subseries}, itms${anomaly.series.handle}${anomaly.subseries}, grp${anomaly.series.handle}${anomaly.subseries}, opt${anomaly.series.handle}${anomaly.subseries});`
+    script += `</script>`
 });
+
+console.log(html);
+console.log(script);

@@ -1,62 +1,48 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-  <link href='https://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css'>
-  <title>Anomaly Swag Production Timeline</title>
-  <script type="text/javascript">var jslang='EN';</script>
+  <head>
+    <meta charset="UTF-8" />
+    <link href='https://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css' />
+    <title>Anomaly Swag Production Timeline</title>
+    <script type="text/javascript">var jslang='EN';</script>
 
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.min.css" rel="stylesheet" type="text/css" />
-  <style type="text/css">
-    body, html {
-      font-family: 'Coda', sans-serif;
-    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.min.css" rel="stylesheet" type="text/css" />
 
-    .spt-design {
-    }
+    <link rel="stylesheet" href="swagtimeline.css" type="text/css" />
+    
+    <script type="text/javascript">
+      $( function() {
+        var hashId = 0,
+            $accordion = $('#accordion');
+        if (window.location.hash) {
+            $accordion.children('h2').each(function (i) {
+                var txt = this.id;
+                if ( txt === 'h2' + window.location.hash ) {
+                    hashId = i;
+                }
+            });
+        }
 
-    .spt-online {
-    }
+        $( "#accordion" ).accordion(
+          {header: "h2", collapsible: true, active: hashId}
+        );
+      } );
+    </script>
 
-    .spt-production {
-    }
+  </head>
+  <body>
+    <h1>Anomaly Swag Timelines</h1>
 
-    .spt-logistics {
-    }
-  </style>
-  
-  <script>
-  $( function() {
-    var hashId = 0,
-        $accordion = $('#accordion');
-    if (window.location.hash) {
-        $accordion.children('h2').each(function (i) {
-            var txt = this.id;
-            if ( txt === 'h2' + window.location.hash ) {
-                hashId = i;
-            }
-        });
-    }
+    <div id="accordion"></div>
 
-    $( "#accordion" ).accordion(
-      {header: "h2", collapsible: true, active: hashId}
-    );
-  } );
-  </script>
+    <script type="text/javascript" src="helper.js"></script>
 
-</head>
-<body data-rsssl=1>
-
-<h1>Anomaly Swag Timelines</h1>
-
-<div id="accordion"></div>
-
-<script type="text/javascript" src="swagtimeline.js"></script>
-
-</body>
+    <script type="text/javascript" src="swagtimeline.js"></script>
+  </body>
 </html>

@@ -1,4 +1,4 @@
-const swag = [
+const events = [
     {
         "id": 1
         , "handle": "RESEARCH"
@@ -206,6 +206,15 @@ const swag = [
 ]
 ;
 
+const groups = [
+    { id: 'Design', content: 'Design'}
+    , { id: 'Store', content: 'Store'}
+    , { id: 'Production', content: 'Production'}
+    , { id: 'Logistics', content: 'Logistics'}
+]
+;
+
 module.exports = {
-    swag: swag
+    events: events
+    , groups: groups
 }

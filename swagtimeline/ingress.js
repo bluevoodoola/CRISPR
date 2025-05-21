@@ -1,4 +1,5 @@
 const dayjs = require('dayjs');
+const schedule_swag = require('./schedule-swag.js');
 
 class Series {
     constructor(handle, name) {
@@ -15,13 +16,17 @@ const series = {
 ;
 
 class Anomaly {
-    constructor(date, series, subseries, sites) {
+    constructor(date, series, subseries, sites, schedule_swag) {
         this.date = dayjs(new Date(date));
         this.series = series;
         this.subseries = subseries;
         this.sites = sites;
         this.uniqueid = `${this.series.handle}${this.subseries}`;
         this.header = `${this.series.name} ${this.subseries} Sites (${this.date.format("YYYY-MMM-DD")}: ${this.sites})`;
+        this.schedule_swag = {
+            events: this.events(schedule_swag.events)
+            , groups: schedule_swag.groups
+        }
     }
 
     events(schedule) {
@@ -49,13 +54,13 @@ class Anomaly {
 
 const anomalies = [
     /* new Anomaly('2025-05-17', series["2025Q2"], "1", "Manila, Providence")
-    , */new Anomaly('2025-06-14', series["2025Q2"], "2", "Perth, Chemnitz")
-    , new Anomaly('2025-08-16', series["2025Q3"], "1", "Malacca, Portland")
-    , new Anomaly('2025-08-23', series["2025Q3"], "2", "Gothenburg, Quebec")
-    , new Anomaly('2025-09-20', series["2025Q3"], "3", "Denpasar, Cambridge")
-    , new Anomaly('2025-10-18', series["2025Q4"], "1", "Valencia, São Paulo")
-    , new Anomaly('2025-10-25', series["2025Q4"], "2", "Wellington, Houston")
-    , new Anomaly('2025-11-15', series["2025Q4"], "3", "Taoyuan, The Hague")
+    , */new Anomaly('2025-06-14', series["2025Q2"], "2", "Perth, Chemnitz", schedule_swag)
+    , new Anomaly('2025-08-16', series["2025Q3"], "1", "Malacca, Portland", schedule_swag)
+    , new Anomaly('2025-08-23', series["2025Q3"], "2", "Gothenburg, Quebec", schedule_swag)
+    , new Anomaly('2025-09-20', series["2025Q3"], "3", "Denpasar, Cambridge", schedule_swag)
+    , new Anomaly('2025-10-18', series["2025Q4"], "1", "Valencia, São Paulo", schedule_swag)
+    , new Anomaly('2025-10-25', series["2025Q4"], "2", "Wellington, Houston", schedule_swag)
+    , new Anomaly('2025-11-15', series["2025Q4"], "3", "Taoyuan, The Hague", schedule_swag)
 ]
 ;
 

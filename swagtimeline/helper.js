@@ -29,16 +29,16 @@ function createElement(tag, options = {}) {
   return element;
 }
 
-function createAnomaly(accordion, handle, uniqueid, header, events, groups) {
+function createAnomaly(accordion, anomaly) {
     accordion
-        .appendChild(createElement("h2", { attributes: { id: "h2#" + handle } }))
-        .appendChild(createElement("a", { attributes: { id: "#" + uniqueid, href: "#" + uniqueid }, classes: [ "header" ], textContent: header }));
-    accordion.appendChild(createElement("div", { attributes: { id: "vis" + uniqueid } }));
+        .appendChild(createElement("h2", { attributes: { id: "h2#" + anomaly.series.handle } }))
+        .appendChild(createElement("a", { attributes: { id: "#" + anomaly.uniqueid, href: "#" + anomaly.uniqueid }, classes: [ "header" ], textContent: anomaly.header }));
+    accordion.appendChild(createElement("div", { attributes: { id: "vis" + anomaly.uniqueid } }));
 
     const tml = new vis.Timeline(
-        document.getElementById("vis" + uniqueid)
-        , new vis.DataSet(events)
-        , new vis.DataSet(groups)
+        document.getElementById("vis" + anomaly.uniqueid)
+        , new vis.DataSet(anomaly.schedule_swag.events)
+        , new vis.DataSet(anomaly.schedule_swag.groups)
         , {}
     );
 }

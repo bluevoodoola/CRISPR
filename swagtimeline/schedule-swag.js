@@ -214,7 +214,4 @@ const groups = [
 ]
 ;
 
-module.exports = {
-    events: events
-    , groups: groups
-}
+export default { events: events, groups: groups };

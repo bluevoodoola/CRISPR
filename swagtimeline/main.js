@@ -1,5 +1,5 @@
-const fs = require('fs');
-const ingress = require('./ingress.js');
+import fs from 'fs';
+import ingress from './ingress.js';
 
 var script = 'var accordion = document.getElementById("accordion");';
 

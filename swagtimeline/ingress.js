@@ -1,5 +1,5 @@
-const dayjs = require('dayjs');
-const schedule_swag = require('./schedule-swag.js');
+import dayjs from 'dayjs';
+import schedule_swag from './schedule-swag.js';
 
 class Series {
     constructor(handle, name) {
@@ -64,7 +64,4 @@ const anomalies = [
 ]
 ;
 
-module.exports = {
-    series: series
-    , anomalies: anomalies
-}
+export default { series, anomalies };

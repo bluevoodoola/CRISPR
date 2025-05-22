@@ -214,4 +214,4 @@ const groups = [
 ]
 ;
 
-export default { events: events, groups: groups };
+const swag = { events: events, groups: groups };

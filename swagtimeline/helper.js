@@ -29,7 +29,7 @@ function createElement(tag, options = {}) {
   return element;
 }
 
-function createAnomaly(accordion, anomaly) {
+function createAnomalyTimeline(accordion, anomaly) {
     accordion
         .appendChild(createElement("h2", { attributes: { id: "h2#" + anomaly.series.handle } }))
         .appendChild(createElement("a", { attributes: { id: "#" + anomaly.uniqueid, href: "#" + anomaly.uniqueid }, classes: [ "header" ], textContent: anomaly.header }));

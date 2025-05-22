@@ -6,7 +6,7 @@ var script = 'var accordion = document.getElementById("accordion");';
 ingress.anomalies.forEach(anomaly => {
     script += `
     {
-        createAnomaly(
+        createAnomalyTimeline(
             accordion
             , ${JSON.stringify(anomaly)}
         );

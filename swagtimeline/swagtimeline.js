@@ -10,7 +10,7 @@ function createAnomalyTimeline(accordion, anomaly) {
         document.getElementById("vis" + anomaly.uniqueid)
         , new vis.DataSet(anomaly.schedule_swag.events)
         , new vis.DataSet(anomaly.schedule_swag.groups)
-        , {}
+        , { timeAxis: {scale: 'day', step: 1}, start: anomaly.schedule_swag.start.format("YYYY-MM-DD"), end: anomaly.schedule_swag.end.format("YYYY-MM-DD") }
     );
 }
 

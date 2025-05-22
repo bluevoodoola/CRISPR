@@ -13,32 +13,40 @@ class Anomaly {
         this.sites = sites;
         this.uniqueid = `${this.series.handle}${this.subseries}`;
         this.header = `${this.series.name} ${this.subseries} Sites (${this.date.format("YYYY-MMM-DD")}: ${this.sites})`;
-        this.schedule_swag = {
-            events: this.events(schedule_swag.events)
-            , groups: schedule_swag.groups
-        }
+        this.schedule_swag = this.events(schedule_swag.events);
+        this.schedule_swag.groups = schedule_swag.groups;
     }
 
     events(schedule) {
         var events = [];
+        var minstart = null;
+        var maxend = null;
         schedule.forEach(event => {
             var start = this.date.add(1 - event["start-days-before"], "day");
             var end = this.date.add(1 - event["end-days-before"], "day");
             if (end.isSame(start)) {
                 end = end.add(1, "day");
             }
-            events.push({
+            if ( minstart == null || start.isBefore(minstart) ) {
+                minstart = start;
+            }
+            if ( maxend == null || end.isAfter(maxend) ) {
+                maxend = end;
+            }
+            var ev = {
                 id: event.id
-                , content: event.name
-                , title: event.name
+                , content: (event.content != null ? event.content : event.name)
+                , title: (event.title != null? event.title : event.name)
                 , start: start.format("YYYY-MM-DD")
                 , end: end.format("YYYY-MM-DD")
                 , className: event["class-name"]
-                , group: event.group
                 , type: event.type
-            });
+                , group: event.group
+                , style: event.style
+            }
+            events.push(ev);
         });
-        return events;
+        return { events: events, start: minstart, end: maxend };
     }
 }
 

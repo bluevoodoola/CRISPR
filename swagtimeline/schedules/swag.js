@@ -7,296 +7,398 @@ const groups = [
 ]
 ;
 
-const events = [
+const events = [];
+
+events.push(
     {
-        "id": 1
-        , "handle": "RESEARCH"
-        , "name": "Product Design, selection, vendor contact, quotes, nail down lead times"
+        "id": "ANOMALYDAY"
+        , "name": "Anomaly Day Distribution"
+        , "content": "Saturday morning and evening (after-party) distribution"
+        , "title": "Anomaly Day Distribution"
         , "description": ""
-        , "start-days-before": 60
-        , "end-days-before": 40
-        , "dependency": "End date is from MOCKUPS_NEEDED"
-        , "class-name": "spt-production"
-        , "group": "Production"
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-before": 0, "anchor": { "type": "anomaly-date" } }
+        , "className": "spt-logistics"
+        , "group": "Logistics"
         , "type": "range"
         , "style": ""
     }
-    , {
-        "id": 2
-        , "handle": "MOCKUPS_NEEDED"
-        , "name": "Store Mockups"
-        , "title": "Close to final design but do not have to be ready for the particular media."
+);
+events.push(
+    {
+        "id": "MISSIONDAY"
+        , "name": "Mission Day Distribution"
+        , "content": "Sunday distribution"
+        , "title": "Mission Day Distribution"
         , "description": ""
-        , "start-days-before": 45
-        , "end-days-before": 40
-        , "dependency": "Starts 5 days before ecommerce is up, ends when ecommerce needs to be up"
-        , "class-name": "spt-design"
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-after": 1, "anchor": { "type": "event", "id": "ANOMALYDAY" } }
+        , "className": "spt-logistics"
+        , "group": "Logistics"
+        , "type": "range"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "PREPARTY"
+        , "name": "Pre-Party Distribution"
+        , "content": "Pre-Party distribution"
+        , "title": "Pre-Party Distribution"
+        , "description": ""
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-before": 1, "anchor": { "type": "event", "id": "ANOMALYDAY" } }
+        , "className": "spt-logistics"
+        , "group": "Logistics"
+        , "type": "range"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "RECEIVING"
+        , "name": "Receiving and Sorting and Bundling Product"
+        , "content": "Receiving and Sorting and Bundling Product"
+        , "title": "Receiving and Sorting and Bundling Product"
+        , "description": ""
+        , "duration": 5
+        , "dependency": {"type": "start-relative", "start-days-before": 8, "anchor": { "type": "event", "id": "ANOMALYDAY" } }
+        , "className": "spt-logistics"
+        , "group": "Logistics"
+        , "type": "range"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "SHIPPING"
+        , "name": "Shipping"
+        , "content": "Shipping"
+        , "title": "Shipping"
+        , "description": ""
+        , "duration": 7
+        , "dependency": {"type": "start-relative", "start-days-after": 7, "anchor": { "type": "event", "id": "MISSIONDAY" } }
+        , "className": "spt-logistics"
+        , "group": "Logistics"
+        , "type": "range"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "ORDERDEADLINE_1WEEK"
+        , "name": "Vendor order T-Shirts (1 week lead time items)"
+        , "content": "Vendor order T-Shirts (1 week lead time items)"
+        , "title": "Vendor order T-Shirts (1 week lead time items)"
+        , "description": ""
+        , "duration": 1
+        , "dependency": {"type": "mid-relative", "start-days-before": 7, "anchor": { "type": "event", "id": "RECEIVING" } }
+        , "className": "spt-production"
+        , "group": "Production"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "COUNTSFINAL_1WEEK"
+        , "name": "Shut off ECommerce/limit sales to order for T-Shirts"
+        , "content": "Shut off ECommerce/limit sales to order for T-Shirts"
+        , "title": "Shut off ECommerce/limit sales to order for T-Shirts"
+        , "description": ""
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-before": 1, "anchor": { "type": "event", "id": "ORDERDEADLINE_1WEEK" } }
+        , "className": "spt-online"
+        , "group": "StoreActions"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "DESIGNFINAL_1WEEK"
+        , "name": "1 Week Items (Shirts)"
+        , "content": "1 Week Items (Shirts)"
+        , "title": "1 Week Items (Shirts)"
+        , "description": ""
+        , "duration": 5
+        , "dependency": {"type": "start-relative", "start-days-before": 5, "anchor": { "type": "event", "id": "ORDERDEADLINE_1WEEK" } }
+        , "className": "spt-design"
         , "group": "Design"
         , "type": "range"
         , "style": ""
     }
-    , {
-        "id": 3
-        , "handle": "SITEUP_ALL"
-        , "name": "All Items Available (Pre-Order)"
+);
+events.push(
+    {
+        "id": "ORDERDEADLINE_2WEEK"
+        , "name": "Vendor order Patches (2 week lead time items)"
+        , "content": "Vendor order Patches (2 week lead time items)"
+        , "title": "Vendor order Patches (2 week lead time items)"
         , "description": ""
-        , "start-days-before": 40
-        , "end-days-before": 26
-        , "dependency": ""
-        , "class-name": "spt-online"
+        , "duration": 1
+        , "dependency": {"type": "mid-relative", "start-days-before": 14, "anchor": { "type": "event", "id": "RECEIVING" } }
+        , "className": "spt-production"
+        , "group": "Production"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "COUNTSFINAL_2WEEK"
+        , "name": "Shut off ECommerce/limit sales to order for Patches (2 week lead time items)"
+        , "content": "Shut off ECommerce/limit sales to order for Patches (2 week lead time items)"
+        , "title": "Shut off ECommerce/limit sales to order for Patches (2 week lead time items)"
+        , "description": ""
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-before": 1, "anchor": { "type": "event", "id": "ORDERDEADLINE_2WEEK" } }
+        , "className": "spt-online"
+        , "group": "StoreActions"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "DESIGNFINAL_2WEEK"
+        , "name": "2 Week Items (Patches)"
+        , "content": "2 Week Items (Patches)"
+        , "title": "2 Week Items (Patches)"
+        , "description": ""
+        , "duration": 5
+        , "dependency": {"type": "start-relative", "start-days-before": 5, "anchor": { "type": "event", "id": "ORDERDEADLINE_2WEEK" } }
+        , "className": "spt-design"
+        , "group": "Design"
+        , "type": "range"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "ORDERDEADLINE_3WEEK"
+        , "name": "Vendor order 3 week lead time items"
+        , "content": "Vendor order 3 week lead time items"
+        , "title": "Vendor order 3 week lead time items"
+        , "description": ""
+        , "duration": 1
+        , "dependency": {"type": "mid-relative", "start-days-before": 21, "anchor": { "type": "event", "id": "RECEIVING" } }
+        , "className": "spt-production"
+        , "group": "Production"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "COUNTSFINAL_3WEEK"
+        , "name": "Shut off ECommerce/limit sales to order for 3 week lead time items"
+        , "content": "Shut off ECommerce/limit sales to order for 3 week lead time items"
+        , "title": "Shut off ECommerce/limit sales to order for 3 week lead time items"
+        , "description": ""
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-before": 1, "anchor": { "type": "event", "id": "ORDERDEADLINE_3WEEK" } }
+        , "className": "spt-online"
+        , "group": "StoreActions"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "DESIGNFINAL_3WEEK"
+        , "name": "3 Week Items"
+        , "content": "3 Week Items"
+        , "title": "3 Week Items"
+        , "description": ""
+        , "duration": 5
+        , "dependency": {"type": "start-relative", "start-days-before": 5, "anchor": { "type": "event", "id": "ORDERDEADLINE_3WEEK" } }
+        , "className": "spt-design"
+        , "group": "Design"
+        , "type": "range"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "ORDERDEADLINE_BADGES"
+        , "name": "Vendor order badges"
+        , "content": "Vendor order badges"
+        , "title": "Vendor order badges"
+        , "description": ""
+        , "duration": 1
+        , "dependency": {"type": "mid-relative", "start-days-before": 21, "anchor": { "type": "event", "id": "RECEIVING" } }
+        , "className": "spt-production"
+        , "group": "Production"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "COUNTSFINAL_BADGES"
+        , "name": "Finalize agent name data for badges"
+        , "content": "Finalize agent name data for badges"
+        , "title": "Finalize agent name data for badges"
+        , "description": ""
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-before": 1, "anchor": { "type": "event", "id": "ORDERDEADLINE_BADGES" } }
+        , "className": "spt-production"
+        , "group": "Production"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "DESIGNFINAL_BADGES"
+        , "name": "Badges"
+        , "content": "Badges"
+        , "title": "Badges"
+        , "description": ""
+        , "duration": 5
+        , "dependency": {"type": "start-relative", "start-days-before": 5, "anchor": { "type": "event", "id": "ORDERDEADLINE_BADGES" } }
+        , "className": "spt-design"
+        , "group": "Design"
+        , "type": "range"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "SITEUP_ALL"
+        , "name": "All Items Available (Pre-Order)"
+        , "content": "All Items Available (Pre-Order)"
+        , "title": "All Items Available (Pre-Order)"
+        , "duration": 21
+        , "dependency": {"type": "start-relative", "start-days-before": 21, "anchor": { "type": "event", "id": "COUNTSFINAL_3WEEK" } }
+        , "className": "spt-online"
         , "group": "Logistics"
         , "type": "range"
         , "style": "color: DarkGreen; background-color: DarkSeaGreen;"
+        , "comments": "3 week of unlimited sales"
     }
-    , {
-        "id": 4
-        , "handle": "STORESETUP"
+);
+events.push(
+    {
+        "id": "STORESETUP"
         , "name": "Store setup"
+        , "content": "Store setup"
         , "title": "Create items in store, setup up bundles and pricing"
-        , "description": ""
-        , "start-days-before": 50
-        , "end-days-before": 40
-        , "dependency": "Starts 5 days before ecommerce is up, ends when ecommerce needs to be up"
-        , "class-name": "spt-online"
+        , "duration": 10
+        , "dependency": {"type": "start-relative", "start-days-before": 10, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-online"
         , "group": "StoreActions"
         , "type": "range"
         , "style": ""
+        , "comments": "Starts 10 days before ecommerce is up, ends when ecommerce needs to be up"
     }
-    , {
-        "id": 5
-        , "handle": "DESIGNDEADLINE_3WEEK"
-        , "name": "3 Week Items"
+);
+events.push(
+    {
+        "id": "MOCKUPS_NEEDED"
+        , "name": "Store Mockups"
+        , "content": "Store Mockups"
+        , "title": "Close to final design but do not have to be ready for the particular media."
         , "description": ""
-        , "start-days-before": 33
-        , "end-days-before": 29
-        , "dependency": ""
-        , "class-name": "spt-design"
+        , "duration": 5
+        , "dependency": {"type": "start-relative", "start-days-before": 5, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-design"
         , "group": "Design"
         , "type": "range"
         , "style": ""
+        , "comments": "Starts 5 days before ecommerce is up, ends when ecommerce needs to be up"
     }
-    , {
-        "id": 6
-        , "handle": "COUNTSFINAL_3WEEK"
-        , "name": "Shut off ECommerce/limit sales to order for 3 week items"
-        , "description": ""
-        , "start-days-before": 26
-        , "end-days-before": 26
-        , "dependency": ""
-        , "class-name": "spt-online"
-        , "group": "StoreActions"
-        , "type": "point"
-        , "style": ""
-    }
-    , {
-        "id": 7
-        , "handle": "DESIGNDEADLINE_2WEEK"
-        , "name": "2 Week Items (Patches)"
-        , "description": ""
-        , "start-days-before": 26
-        , "end-days-before": 22
-        , "dependency": ""
-        , "class-name": "spt-design"
-        , "group": "Design"
-        , "type": "range"
-        , "style": ""
-    }
-    , {
-        "id": 8
-        , "handle": "ORDERDEADLINE_3WEEK"
-        , "name": "Last Time to Order 3 week lead time items"
-        , "description": ""
-        , "start-days-before": 25
-        , "end-days-before": 24
-        , "dependency": ""
-        , "class-name": "spt-production"
-        , "group": "Production"
-        , "type": "point"
-        , "style": ""
-    }
-    , {
-        "id": 9
-        , "handle": "COUNTSFINAL_2WEEK"
-        , "name": "Shut off ECommerce/limit sales to order for Patches"
-        , "description": ""
-        , "start-days-before": 19
-        , "end-days-before": 19
-        , "dependency": ""
-        , "class-name": "spt-online"
-        , "group": "StoreActions"
-        , "type": "point"
-        , "style": ""
-    }
-    , {
-        "id": 10
-        , "handle": "DESIGNDEADLINE_2WEEK"
-        , "name": "1 Week Items (Shirts)"
-        , "description": ""
-        , "start-days-before": 18
-        , "end-days-before": 14
-        , "dependency": ""
-        , "class-name": "spt-design"
-        , "group": "Design"
-        , "type": "range"
-        , "style": ""
-    }
-    , {
-        "id": 11
-        , "handle": "ORDERDEADLINE_2WEEK"
-        , "name": "Last Time to Order Patches (2 week lead time items)"
-        , "description": ""
-        , "start-days-before": 18
-        , "end-days-before": 17
-        , "dependency": ""
-        , "class-name": "spt-production"
-        , "group": "Production"
-        , "type": "point"
-        , "style": ""
-    }
-    , {
-        "id": 12
-        , "handle": "COUNTSFINAL_1WEEK"
-        , "name": "Shut off ECommerce/limit sales to order for T-Shirts"
-        , "description": ""
-        , "start-days-before": 12
-        , "end-days-before": 12
-        , "dependency": ""
-        , "class-name": "spt-online"
-        , "group": "StoreActions"
-        , "type": "point"
-        , "style": ""
-    }
-    , {
-        "id": 13
-        , "handle": "ORDERDEADLINE_1WEEK"
-        , "name": "Last Time to Order T-Shirts (1 week lead time items)"
-        , "description": ""
-        , "start-days-before": 11
-        , "end-days-before": 10
-        , "dependency": ""
-        , "class-name": "spt-production"
-        , "group": "Production"
-        , "type": "point"
-        , "style": ""
-    }
-    , {
-        "id": 14
-        , "handle": "RECEIVING"
-        , "name": "Receiving and Sorting and Bundling Product"
-        , "description": ""
-        , "start-days-before": 8
-        , "end-days-before": 3
-        , "dependency": ""
-        , "class-name": "spt-logistics"
-        , "group": "Logistics"
-        , "type": "range"
-        , "style": ""
-    }
-    , {
-        "id": 15
-        , "handle": "FRIDAYDISTRO"
-        , "name": "Friday Evening Distribution"
-        , "description": ""
-        , "start-days-before": 1
-        , "end-days-before": 1
-        , "dependency": ""
-        , "class-name": "spt-logistics"
-        , "group": "Logistics"
-        , "type": "range"
-        , "style": ""
-    }
-    , {
-        "id": 16
-        , "handle": "SATURDAYDISTRO"
-        , "name": "Saturday Morning and Evening Distribution"
-        , "description": ""
-        , "start-days-before": 0
-        , "end-days-before": 0
-        , "dependency": ""
-        , "class-name": "spt-logistics"
-        , "group": "Logistics"
-        , "type": "range"
-        , "style": ""
-    }
-    , {
-        "id": 17
-        , "handle": "SUNDAYDISTRO"
-        , "name": "Sunday Distribution"
-        , "description": ""
-        , "start-days-before": -1
-        , "end-days-before": -1
-        , "dependency": ""
-        , "class-name": "spt-logistics"
-        , "group": "Logistics"
-        , "type": "range"
-        , "style": ""
-    }
-    , {
-        "id": 18
-        , "handle": "SHIPPING"
-        , "name": "Shipping"
-        , "description": ""
-        , "start-days-before": -9
-        , "end-days-before": -16
-        , "dependency": ""
-        , "class-name": "spt-logistics"
-        , "group": "Logistics"
-        , "type": "range"
-        , "style": ""
-    }
-    , {
-        "id": 19
-        , "handle": "SITEUP_REDUCED"
+);
+events.push(
+    {
+        "id": "SITEUP_REDUCED"
         , "name": "Items only available based on order quantities and sales"
-        , "description": ""
-        , "start-days-before": 26
-        , "end-days-before": -16
-        , "dependency": ""
-        , "class-name": "spt-online"
+        , "content": "Items only available based on order quantities and sales"
+        , "title": "Items only available based on order quantities and sales"
+        , "duration": 21
+        , "dependency": {"type": "end-relative", "start-days-before": 0, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-online"
         , "group": "Logistics"
         , "type": "range"
         , "style": "color: red; background-color: pink;"
     }
-    , {
-        "id": 20
-        , "handle": "MARKETINGOPEN"
+);
+events.push(
+    {
+        "id": "RESEARCH"
+        , "name": "Product Design, selection, vendor contact, quotes, nail down lead times"
+        , "content": "Product Design, selection, vendor contact, quotes, nail down lead times"
+        , "title": "Product Design, selection, vendor contact, quotes, nail down lead times"
+        , "duration": 28
+        , "dependency": {"type": "start-relative", "start-days-before": 28, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-production"
+        , "group": "Production"
+        , "type": "range"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "MARKETINGOPEN"
         , "name": "Announce store"
-        , "description": ""
-        , "start-days-before": 40
-        , "end-days-before": 40
-        , "dependency": ""
-        , "class-name": "spt-marketing"
+        
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-before": 0, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-marketing"
         , "group": "Marketing"
         , "type": "point"
         , "style": ""
     }
-    , {
-        "id": 21
-        , "handle": "MARKETINGREMINDER"
+);
+events.push(
+    {
+        "id": "MARKETINGREMINDER"
         , "name": "Reminder"
-        , "description": ""
-        , "start-days-before": 33
-        , "end-days-before": 33
-        , "dependency": ""
-        , "class-name": "spt-marketing"
+        
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-after": 7, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-marketing"
         , "group": "Marketing"
         , "type": "point"
         , "style": ""
     }
-    , {
-        "id": 22
-        , "handle": "MARKETINGLASTCHANGE"
-        , "name": "Last chance as counts being finalized"
-        , "description": ""
-        , "start-days-before": 26
-        , "end-days-before": 26
-        , "dependency": ""
-        , "class-name": "spt-marketing"
+);
+events.push(
+    {
+        "id": "MARKETINGLASTCHANGE3"
+        , "name": "Last chance for 3 week items as counts being finalized"
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-after": 14, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-marketing"
         , "group": "Marketing"
         , "type": "point"
         , "style": ""
     }
-]
-;
+);
+events.push(
+    {
+        "id": "MARKETINGLASTCHANGE2"
+        , "name": "Last chance for 2 week items as counts being finalized"
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-after": 21, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-marketing"
+        , "group": "Marketing"
+        , "type": "point"
+        , "style": ""
+    }
+);
+events.push(
+    {
+        "id": "MARKETINGLASTCHANGE1"
+        , "name": "Last chance for 1 week items as counts being finalized"
+        , "duration": 1
+        , "dependency": {"type": "start-relative", "start-days-after": 28, "anchor": { "type": "event", "id": "SITEUP_ALL" } }
+        , "className": "spt-marketing"
+        , "group": "Marketing"
+        , "type": "point"
+        , "style": ""
+    }
+);
 
 const swag = { events: events, groups: groups };

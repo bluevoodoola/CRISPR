@@ -12,7 +12,7 @@ class Anomaly {
         this.subseries = subseries;
         this.sites = sites;
         this.uniqueid = `${this.series.handle}${this.subseries}`;
-        this.header = `${this.series.name} ${this.subseries} Sites (${this.date.format("YYYY-MMM-DD")}: ${this.sites})`;
+        this.header = `${this.series.name} ${this.subseries}: ${this.date.format("YYYY-MMM-DD")} - ${this.sites})`;
         this.schedule_swag = this.events(schedule_swag.events);
         this.schedule_swag.groups = schedule_swag.groups;
     }
@@ -21,28 +21,89 @@ class Anomaly {
         var events = [];
         var minstart = null;
         var maxend = null;
+        var anchordate;
+        var start;
+        var end;
         schedule.forEach(event => {
-            var start = this.date.add(1 - event["start-days-before"], "day");
-            var end = this.date.add(1 - event["end-days-before"], "day");
-            if (end.isSame(start)) {
-                end = end.add(1, "day");
+            switch ( event.dependency.anchor.type ) {
+                case "anomaly-date":
+                    anchordate = this.date;
+                    switch ( event.dependency.type ) {
+                        case "start-relative": 
+                            if ( event.dependency["start-days-before"] !== undefined ) {
+                                start = anchordate.add(-event.dependency["start-days-before"], "day");
+                            }
+                            if ( event.dependency["start-days-after"] !== undefined ) {
+                                start = anchordate.add(event.dependency["start-days-after"], "day");
+                            }
+                            if ( event["duration"] !== undefined ) {
+                                end = start.add(event["duration"], "day");
+                            }
+                            break;
+                    }
+                    break;
+                
+                case "event":
+                    var anchorevent = events.find(e => e.id === event.dependency.anchor.id);
+                    switch ( event.dependency.type ) {
+                        case "start-relative": 
+                            if ( event.dependency["start-days-before"] !== undefined ) {
+                                start = anchorevent.internal.startdate.add(-event.dependency["start-days-before"], "day");
+                            }
+                            if ( event.dependency["start-days-after"] !== undefined ) {
+                                start = anchorevent.internal.startdate.add(event.dependency["start-days-after"], "day");
+                            }
+                            if ( event["duration"] !== undefined ) {
+                                end = start.add(event["duration"], "day");
+                            }
+                            break;
+                        case "end-relative": 
+                            if ( event.dependency["start-days-before"] !== undefined ) {
+                                start = anchorevent.internal.enddate.add(-event.dependency["start-days-before"], "day");
+                            }
+                            if ( event.dependency["start-days-after"] !== undefined ) {
+                                start = anchorevent.internal.enddate.add(event.dependency["start-days-after"], "day");
+                            }
+                            if ( event["duration"] !== undefined ) {
+                                end = start.add(event["duration"], "day");
+                            }
+                            break;
+                        case "mid-relative": 
+                            if ( event.dependency["start-days-before"] !== undefined ) {
+                                start = anchorevent.internal.startdate.add(anchorevent.internal.duration / 2.0 - event.dependency["start-days-before"], "day");
+                            }
+                            if ( event.dependency["start-days-after"] !== undefined ) {
+                                start = anchorevent.internal.startdate.add(anchorevent.internal.duration / 2.0 + event.dependency["start-days-after"], "day");
+                            }
+                            if ( event["duration"] !== undefined ) {
+                                end = start.add(event["duration"], "day");
+                            }
+                            break;
+                    }
+                    break;
             }
-            if ( minstart == null || start.isBefore(minstart) ) {
+
+            if ( minstart === null || start.isBefore(minstart) ) {
                 minstart = start;
             }
-            if ( maxend == null || end.isAfter(maxend) ) {
+            if ( maxend === null || end.isAfter(maxend) ) {
                 maxend = end;
             }
             var ev = {
                 id: event.id
-                , content: (event.content != null ? event.content : event.name)
-                , title: (event.title != null? event.title : event.name)
+                , content: (event.content !== undefined ? event.content : event.name)
+                , title: (event.title !== undefined ? event.title : event.name)
                 , start: start.format("YYYY-MM-DD")
                 , end: end.format("YYYY-MM-DD")
-                , className: event["class-name"]
-                , type: event.type
-                , group: event.group
-                , style: event.style
+                , className: event.className
+                , type: (event.type !== undefined ? event.type : "range")
+                , group: (event.group !== undefined ? event.group : "UNKNOWN")
+                , style: (event.style !== undefined ? event.style : "")
+                , internal: {
+                    startdate: start
+                    , enddate: end
+                    , duration: event["duration"]
+                }
             }
             events.push(ev);
         });

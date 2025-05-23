@@ -18,21 +18,24 @@
     <link rel="stylesheet" href="swagtimeline.css" type="text/css" />
     
     <script type="text/javascript">
-      $( function() {
-        var hashId = 0,
-            $accordion = $('#accordion');
-        if (window.location.hash) {
-            $accordion.children('h2').each(function (i) {
-                var txt = this.id;
-                if ( txt === 'h2' + window.location.hash ) {
-                    hashId = i;
-                }
-            });
-        }
+      // $( function() {
+      //   var hashId = 0,
+      //       $accordion = $('#accordion');
+      //   if (window.location.hash) {
+      //       $accordion.children('h2').each(function (i) {
+      //           var txt = this.id;
+      //           if ( txt === 'h2' + window.location.hash ) {
+      //               hashId = i;
+      //           }
+      //       });
+      //   }
 
-        $( "#accordion" ).accordion(
-          {header: "h2", collapsible: true, active: hashId, heightStyle: "content"}
-        );
+      //   $( "#accordion" ).accordion(
+      //     {header: "h2", collapsible: true, active: hashId, heightStyle: "content"}
+      //   );
+      // } );
+      $( function() {
+        $( "#tabs" ).tabs();
       } );
     </script>
 
@@ -40,7 +43,11 @@
   <body>
     <h1>Anomaly Swag Timelines</h1>
 
-    <div id="accordion"></div>
+    <!-- <div id="accordion"></div> -->
+    <div id="tabs">
+      <ul id="nav">
+      </ul>
+    </div>
 
     <script type="text/javascript" src="helper.js"></script>
     <script type="text/javascript" src="schedules/swag.js"></script>

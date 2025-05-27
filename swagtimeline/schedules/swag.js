@@ -7,9 +7,7 @@ const groups = [
 ]
 ;
 
-const events = [];
-
-events.push(
+const events = [
     {
         "id": "ANOMALYDAY"
         , "name": "Anomaly Day Distribution"
@@ -23,9 +21,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "MISSIONDAY"
         , "name": "Mission Day Distribution"
         , "content": "Sunday distribution"
@@ -38,9 +34,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "PREPARTY"
         , "name": "Pre-Party Distribution"
         , "content": "Pre-Party distribution"
@@ -53,9 +47,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "RECEIVING"
         , "name": "Receiving and Sorting and Bundling Product"
         , "content": "Receiving and Sorting and Bundling Product"
@@ -68,9 +60,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "SHIPPING"
         , "name": "Shipping"
         , "content": "Shipping"
@@ -83,9 +73,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "ORDERDEADLINE_1WEEK"
         , "name": "Vendor order T-Shirts (1 week lead time items)"
         , "content": "Vendor order T-Shirts (1 week lead time items)"
@@ -98,9 +86,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "COUNTSFINAL_1WEEK"
         , "name": "Shut off ECommerce/limit sales to order for T-Shirts"
         , "content": "Shut off ECommerce/limit sales to order for T-Shirts"
@@ -113,9 +99,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "DESIGNFINAL_1WEEK"
         , "name": "1 Week Items (Shirts)"
         , "content": "1 Week Items (Shirts)"
@@ -128,9 +112,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "ORDERDEADLINE_2WEEK"
         , "name": "Vendor order Patches (2 week lead time items)"
         , "content": "Vendor order Patches (2 week lead time items)"
@@ -143,9 +125,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "COUNTSFINAL_2WEEK"
         , "name": "Shut off ECommerce/limit sales to order for Patches (2 week lead time items)"
         , "content": "Shut off ECommerce/limit sales to order for Patches (2 week lead time items)"
@@ -158,9 +138,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "DESIGNFINAL_2WEEK"
         , "name": "2 Week Items (Patches)"
         , "content": "2 Week Items (Patches)"
@@ -173,9 +151,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "ORDERDEADLINE_3WEEK"
         , "name": "Vendor order 3 week lead time items"
         , "content": "Vendor order 3 week lead time items"
@@ -188,9 +164,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "COUNTSFINAL_3WEEK"
         , "name": "Shut off ECommerce/limit sales to order for 3 week lead time items"
         , "content": "Shut off ECommerce/limit sales to order for 3 week lead time items"
@@ -203,9 +177,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "DESIGNFINAL_3WEEK"
         , "name": "3 Week Items"
         , "content": "3 Week Items"
@@ -218,9 +190,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "ORDERDEADLINE_BADGES"
         , "name": "Vendor order badges"
         , "content": "Vendor order badges"
@@ -233,9 +203,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "COUNTSFINAL_BADGES"
         , "name": "Finalize agent name data for badges"
         , "content": "Finalize agent name data for badges"
@@ -248,9 +216,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "DESIGNFINAL_BADGES"
         , "name": "Badges"
         , "content": "Badges"
@@ -263,9 +229,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "SITEUP_ALL"
         , "name": "All Items Available (Pre-Order)"
         , "content": "All Items Available (Pre-Order)"
@@ -278,9 +242,7 @@ events.push(
         , "style": "color: DarkGreen; background-color: DarkSeaGreen;"
         , "comments": "3 week of unlimited sales"
     }
-);
-events.push(
-    {
+    , {
         "id": "STORESETUP"
         , "name": "Store setup"
         , "content": "Store setup"
@@ -293,9 +255,7 @@ events.push(
         , "style": ""
         , "comments": "Starts 10 days before ecommerce is up, ends when ecommerce needs to be up"
     }
-);
-events.push(
-    {
+    , {
         "id": "MOCKUPS_NEEDED"
         , "name": "Store Mockups"
         , "content": "Store Mockups"
@@ -309,9 +269,7 @@ events.push(
         , "style": ""
         , "comments": "Starts 5 days before ecommerce is up, ends when ecommerce needs to be up"
     }
-);
-events.push(
-    {
+    , {
         "id": "SITEUP_REDUCED"
         , "name": "Items only available based on order quantities and sales"
         , "content": "Items only available based on order quantities and sales"
@@ -323,9 +281,7 @@ events.push(
         , "type": "range"
         , "style": "color: red; background-color: pink;"
     }
-);
-events.push(
-    {
+    , {
         "id": "RESEARCH"
         , "name": "Product Design, selection, vendor contact, quotes, nail down lead times"
         , "content": "Product Design, selection, vendor contact, quotes, nail down lead times"
@@ -337,9 +293,7 @@ events.push(
         , "type": "range"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "MARKETINGOPEN"
         , "name": "Announce store"
         
@@ -350,9 +304,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "MARKETINGREMINDER"
         , "name": "Reminder"
         
@@ -363,9 +315,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "MARKETINGLASTCHANGE3"
         , "name": "Last chance for 3 week items as counts being finalized"
         , "duration": 1
@@ -375,9 +325,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "MARKETINGLASTCHANGE2"
         , "name": "Last chance for 2 week items as counts being finalized"
         , "duration": 1
@@ -387,9 +335,7 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
-events.push(
-    {
+    , {
         "id": "MARKETINGLASTCHANGE1"
         , "name": "Last chance for 1 week items as counts being finalized"
         , "duration": 1
@@ -399,6 +345,6 @@ events.push(
         , "type": "point"
         , "style": ""
     }
-);
+];
 
 const swag = { events: events, groups: groups };

@@ -1,13 +1,12 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <link href='https://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css'>
-<title>Lawson Equivalence</title>
+<title>Hypercube Equivalence</title>
 <script type="text/javascript">var jslang='EN';</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 <style>
         body {
             font-size : 24px;
@@ -71,18 +70,18 @@
         Target Cubes
         <div id="sliderTargetCubes" class="slider"></div></div>
         <div style="margin:30px;">
-        Lawson Count
-        <div id="sliderLawsonCount" class="slider"></div></div>
+        Hypercube Count
+        <div id="sliderHyperCount" class="slider"></div></div>
 
         <div id="inputs" class="Inputs Area" style="width : 33% ; clear : left;">
             <p>Your Agent Level is <input name="AgentLevel" id="AgentLevel" type="text" class="inputMeasure" value="16" />.</p>
             <p>Your team lead has recommended a target of <input name="TargetCount" id="TargetCount" type="text" class="inputMeasure" value="100" /> L8 Power Cubes for a total target capacity <span id="TargetXM" class="calc"></span> XM.</p>
-            <p>A Lawson Power Cube is worth <span id="Worth" class="calc"></span> L8C for you at your level - it stores much greater density of XM.</p>
-            <p>So we recommend having <span id="RL" class="calc"></span> Lawson Cubes to realize a maximum space savings of <span id="MaxSavings" class="calc"></span> inventory slots.
-            <p>You currently have <input name="LawsonCount" id="LawsonCount" type="text" class="inputMeasure" value="0" /> Lawson Cubes.</p>
+            <p>A Hypercube is worth <span id="Worth" class="calc"></span> L8C for you at your level - it stores much greater density of XM.</p>
+            <p>So we recommend having <span id="RL" class="calc"></span> Hypercubes to realize a maximum space savings of <span id="MaxSavings" class="calc"></span> inventory slots.
+            <p>You currently have <input name="HyperCount" id="HyperCount" type="text" class="inputMeasure" value="0" /> Hypercubes.</p>
             <p>You will need an additional <span id="AddCubes" class="calc"></span> L8C to reach the target capacity.</p>
             <p>You will be using a total of <span id="Slots" class="calc"></span> inventory slots for all cubes, a savings of <span id="Savings" class="calc"></span></p>
-            <p>You could still save <span id="CouldSave" class="calc"></span> more inventory slots for that target by getting <span id="MoreCubes" class="calc"></span> more Lawson Cubes.</p>
+            <p>You could still save <span id="CouldSave" class="calc"></span> more inventory slots for that target by getting <span id="MoreCubes" class="calc"></span> more Hypercubes.</p>
         </div>
 
         <div id="Chart" class="Chart Area" style="width : 33% ;">
@@ -90,12 +89,16 @@
         </div>
 
         <div id="Instructions" class="Instructions Area" style="width : 33% ;">
-        	Instructions: All team inventory requirements include some amount of L8 Powercubes.  Lawson cubes
+        	<p>Instructions: All team inventory requirements include some amount of L8 Powercubes.  Hypercubes
         	have more stored XM, but the capacity varies by agent level.  Enter the recommended number of cubes,
-        	your level and the number of actual Lawson cubes you have farmed and this app will show you
-        	how many Lawson Powercubes you need and how many additional L8 Powercubes you need.
+        	your level and the number of actual Hypercubes you have farmed and this app will show you
+        	how many Hypercubes you need and how many additional L8 Powercubes you need.</p>
 
-        	<br><a href="https://fevgames.net/ingress/ingress-guide/items/power-cube/">https://fevgames.net/ingress/ingress-guide/items/power-cube/</a>
+            <p>You can also convert any cubes (over L4) to Hypercubes by using kinetic capsules.</p>
+
+            <p>More cube capacity than is required for the anomaly is wasted space that could be used for gear you will use during the anomaly like bursters, shields, ultrastrikes, keys and resonators, so pump that extra XM into portals before the anomaly instead of carrying around useless gear.</p>
+
+        	<p><a href="https://fevgames.net/ingress/ingress-guide/items/power-cube/">https://fevgames.net/ingress/ingress-guide/items/power-cube/</a></p>
         </div>
     </div>
 
@@ -111,7 +114,7 @@
 			"8": {XM: 8000}
         };
 
-        var STATS_LAWSON = {
+        var STATS_HYPER = {
 			"1": {XM: 18000},
 			"2": {XM: 20250},
 			"3": {XM: 22500},
@@ -133,33 +136,32 @@
         function calc() {
             var TargetCount = $("#TargetCount").val();
             var AgentLevel = $("#AgentLevel").val();
-            var LawsonCount = $("#LawsonCount").val();
+            var HyperCount = $("#HyperCount").val();
             var Worth;
 
             if ($.isNumeric(AgentLevel)) {
                 AgentLevel = Math.floor(AgentLevel);
-                Worth = STATS_LAWSON[AgentLevel].XM / STATS_POWERCUBE["8"].XM;
+                Worth = STATS_HYPER[AgentLevel].XM / STATS_POWERCUBE["8"].XM;
                 $("#Worth").text(Worth);
             }
 
-            if ($.isNumeric(TargetCount) && $.isNumeric(AgentLevel) && $.isNumeric(LawsonCount)) {
+            if ($.isNumeric(TargetCount) && $.isNumeric(AgentLevel) && $.isNumeric(HyperCount)) {
             	TargetCount = Math.floor(TargetCount);
-            	LawsonCount = Math.floor(LawsonCount);
-            	var RL = Math.ceil(TargetCount / (STATS_LAWSON[AgentLevel].XM / STATS_POWERCUBE["8"].XM));
-            	var AL = LawsonCount;
+            	HyperCount = Math.floor(HyperCount);
+            	var RL = Math.ceil(TargetCount / (STATS_HYPER[AgentLevel].XM / STATS_POWERCUBE["8"].XM));
+            	var AL = HyperCount;
                 var TargetXM = TargetCount * STATS_POWERCUBE["8"].XM;
-                var LawsonXM = AL * STATS_LAWSON[AgentLevel].XM;
-            	var AddCubes = Math.min(TargetCount, Math.max(0, Math.ceil((TargetXM - LawsonXM) / STATS_POWERCUBE["8"].XM)));
+                var HyperXM = AL * STATS_HYPER[AgentLevel].XM;
+            	var AddCubes = Math.min(TargetCount, Math.max(0, Math.ceil((TargetXM - HyperXM) / STATS_POWERCUBE["8"].XM)));
             	var Slots = AL + AddCubes;
             	var Savings = TargetCount - Slots;
                 var MaxSavings = TargetCount - RL;
                 var CubeXM = AddCubes * STATS_POWERCUBE["8"].XM;
-                var ActualXM = LawsonXM + CubeXM;
+                var ActualXM = HyperXM + CubeXM;
                 var CouldSave = MaxSavings - Savings;
                 var MoreCubes = RL - AL;
 
                 $("#RL").text(RL);
-                $("#AL").val(AL);
                 $("#AddCubes").text(AddCubes);
                 $("#Slots").text(Slots);
                 $("#RCCompare").text(TargetCount);
@@ -171,14 +173,14 @@
 
 	        	var canvas = $("#ChartCanvas")[0];
 	        	var ChartTargetXM = Math.max(TargetXM, ActualXM);
-	        	var LawsonPct = LawsonXM / ChartTargetXM;
+	        	var HyperPct = HyperXM / ChartTargetXM;
 	        	var CubePct = CubeXM / ChartTargetXM;
 
 	        	canvas.height = ChartTargetXM / 2000;
 	        	chartHeight = canvas.height;
 	        	chartWidth = canvas.width / 4;
 
-	        	var LawsonHeight = chartHeight * LawsonPct;
+	        	var HyperHeight = chartHeight * HyperPct;
 	        	var CubeHeight = chartHeight * CubePct;
                 var padding = 10 ;
                 var fontHeight = 28;
@@ -195,39 +197,39 @@
                 ctx.fillText(TargetXM + " Target XM", chartWidth / 2, (chartHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
 
 	        	ctx.fillStyle = "#0000FF";
-	        	ctx.fillRect(chartWidth, 0, chartWidth, LawsonHeight);
+	        	ctx.fillRect(chartWidth, 0, chartWidth, HyperHeight);
 	        	ctx.font = fontStyle;
 	        	ctx.fillStyle = "black";
 	        	ctx.textAlign = "center";
 	        	if ( AL > 0 ) {
-	        		ctx.fillText(LawsonXM + " Lawson XM", 1.5 * chartWidth, (LawsonHeight + fontHeight) / 2, chartWidth - padding * 2);
-                    ctx.fillText(AL + " Lawson Cubes", 1.5 * chartWidth, (LawsonHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
+	        		ctx.fillText(HyperXM + " Hypercube XM", 1.5 * chartWidth, (HyperHeight + fontHeight) / 2, chartWidth - padding * 2);
+                    ctx.fillText(AL + " Hypercubes", 1.5 * chartWidth, (HyperHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
 	        	}
 
 	        	ctx.fillStyle = "#0000DD";
-	        	ctx.fillRect(chartWidth, LawsonHeight, chartWidth, CubeHeight);
+	        	ctx.fillRect(chartWidth, HyperHeight, chartWidth, CubeHeight);
 	        	ctx.font = fontStyle;
 	        	ctx.fillStyle = "black";
 	        	ctx.textAlign = "center";
 				if (AddCubes > 0) {
-	        		ctx.fillText(CubeXM + " Cube XM", 1.5 * chartWidth, LawsonHeight + (CubeHeight + fontHeight) / 2, chartWidth - padding * 2);
-                    ctx.fillText(AddCubes + " L8 Cubes", 1.5 * chartWidth, LawsonHeight + (CubeHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
+	        		ctx.fillText(CubeXM + " Cube XM", 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2, chartWidth - padding * 2);
+                    ctx.fillText(AddCubes + " L8 Cubes", 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
 		        }
 
                 for (var lp = 0 ; lp < AL ; lp++) {
                     ctx.fillStyle = "#0000EE";
-                    ctx.fillRect(2 * chartWidth, lp * LawsonHeight / AL, chartWidth, LawsonHeight / AL);
+                    ctx.fillRect(2 * chartWidth, lp * HyperHeight / AL, chartWidth, HyperHeight / AL);
                     ctx.lineWidth = 2;
                     ctx.strokeStyle = "black";
-                    ctx.strokeRect(2 * chartWidth, lp * LawsonHeight / AL, chartWidth, LawsonHeight / AL);
+                    ctx.strokeRect(2 * chartWidth, lp * HyperHeight / AL, chartWidth, HyperHeight / AL);
                 };
 
                 for (var lp = 0 ; lp < AddCubes ; lp++) {
                     ctx.fillStyle = "#0000AA";
-                    ctx.fillRect(2 * chartWidth, LawsonHeight + lp * CubeHeight / AddCubes, chartWidth, CubeHeight / AddCubes);
+                    ctx.fillRect(2 * chartWidth, HyperHeight + lp * CubeHeight / AddCubes, chartWidth, CubeHeight / AddCubes);
                     ctx.lineWidth = 2;
                     ctx.strokeStyle = "black";
-                    ctx.strokeRect(2 * chartWidth, LawsonHeight + lp * CubeHeight / AddCubes, chartWidth, CubeHeight / AddCubes);
+                    ctx.strokeRect(2 * chartWidth, HyperHeight + lp * CubeHeight / AddCubes, chartWidth, CubeHeight / AddCubes);
                 };
 
                 for (var lp = 0 ; lp < TargetCount ; lp++) {
@@ -252,7 +254,7 @@
                 ctx.textAlign = "center";
                 ctx.fillText(Savings + " Slots Freed", 3.5 * chartWidth, Slots * chartHeight / TargetCount + (TargetCount - Slots) * chartHeight / (2 * TargetCount), chartWidth - padding * 2);
 
-                initLawsonSlider(LawsonCount, RL);
+                initHyperSlider(HyperCount, RL);
             }
             else {
                 $("#RL").text("");
@@ -344,15 +346,15 @@
             $( "#TargetCount" ).val( $( "#sliderTargetCubes" ).slider( "value" ) );
           });
 
-        function initLawsonSlider(CurrentCount, TargetCount) {
+        function initHyperSlider(CurrentCount, TargetCount) {
             $(".lclabels").remove();
-            $( "#sliderLawsonCount" ).slider({
+            $( "#sliderHyperCount" ).slider({
               value:CurrentCount,
               min: 0,
               max: TargetCount,
               step: 1,
               slide: function( event, ui ) {
-                $( "#LawsonCount" ).val( ui.value );
+                $( "#HyperCount" ).val( ui.value );
                 calc();
               }
             }).each(function() {
@@ -375,14 +377,14 @@
                     var el = $('<label class="lclabels">' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
 
                     // Add the element inside #slider
-                    $("#sliderLawsonCount").append(el);
+                    $("#sliderHyperCount").append(el);
                 }
             });
-            $( "#LawsonCount" ).val( $( "#sliderLawsonCount" ).slider( "value" ) );
+            $( "#HyperCount" ).val( $( "#sliderHyperCount" ).slider( "value" ) );
         };
 
         $(function() {
-            initLawsonSlider(0, 16);
+            initHyperSlider(0, 16);
           });
 
         $(function() {calc();})

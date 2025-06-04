@@ -180,112 +180,39 @@
 		$(".inputMeasure").on("input", function () { calc(); });
 		$(".inputMeasure").on("change", function () { calc(); });
 
-		$(function() {
-			$( "#sliderAgentLevel" ).slider({
-			  value:16,
-			  min: 8,
-			  max: 16,
-			  step: 1,
+		function initGenericSlider(SliderSelector, ValueSelector, min, max, step, value, className) {
+			$( SliderSelector ).slider({
+			  value: value,
+			  min: min,
+			  max: max,
+			  step: step,
 			  slide: function( event, ui ) {
-				$( "#AgentLevel" ).val( ui.value );
+				$( ValueSelector ).val( ui.value );
 				calc();
 			  }
 			}).each(function() {
-				// Add labels to slider whose values 
-				// are specified by min, max
-
-				// Get the options for this slider (specified above)
 				var opt = $(this).data().uiSlider.options;
-
-				// Get the number of possible values
-				var vals = opt.max - opt.min;
-
-				// Position the labels
-				for (var i = 0; i <= vals; i++) {
-
-					// Create a new element and position it with percentages
-					var el = $('<label>' + (i + opt.min) + '</label>').css('left', (i/vals*100) + '%');
-
-					// Add the element inside #slider
-					$("#sliderAgentLevel").append(el);
-				}
-			});
-
-			$( "#AgentLevel" ).val( $( "#sliderAgentLevel" ).slider( "value" ) );
-		  });
-
-		$(function() {
-			$( "#sliderTargetCubes" ).slider({
-			  value:100,
-			  min: 100,
-			  max: 150,
-			  step: 5,
-			  slide: function( event, ui ) {
-				$( "#TargetCount" ).val( ui.value );
-				calc();
-			  }
-			}).each(function() {
-				// Add labels to slider whose values 
-				// are specified by min, max
-
-				// Get the options for this slider (specified above)
-				var opt = $(this).data().uiSlider.options;
-
-				// Get the number of possible values
 				var vals = ((opt.max - opt.min) / (opt.step));
-
-				// Position the labels
 				for (var i = 0; i <= vals; i++) {
-
-					// Create a new element and position it with percentages
-					var el = $('<label>' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
-
-					// Add the element inside #slider
-					$("#sliderTargetCubes").append(el);
+					var el = $('<label' + (className !== '' ? ' class="' + className + '"' : '') + '>' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
+					$(this).append(el);
 				}
 			});
-			$( "#TargetCount" ).val( $( "#sliderTargetCubes" ).slider( "value" ) );
-		  });
+
+			$( ValueSelector ).val( $( SliderSelector ).slider( "value" ) );
+		}
 
 		function initHyperSlider(CurrentCount, TargetCount) {
 			$(".lclabels").remove();
-			$( "#sliderHyperCount" ).slider({
-			  value:CurrentCount,
-			  min: 0,
-			  max: TargetCount,
-			  step: 1,
-			  slide: function( event, ui ) {
-				$( "#HyperCount" ).val( ui.value );
-				calc();
-			  }
-			}).each(function() {
-				// Add labels to slider whose values 
-				// are specified by min, max
-
-				// Get the options for this slider (specified above)
-				var opt = $(this).data().uiSlider.options;
-
-				// Get the number of possible values
-				var vals = ((opt.max - opt.min) / (opt.step));
-
-				// Position the labels
-				for (var i = 0; i <= vals; i++) {
-
-					// Create a new element and position it with percentages
-					var el = $('<label class="lclabels">' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
-
-					// Add the element inside #slider
-					$("#sliderHyperCount").append(el);
-				}
-			});
-			$( "#HyperCount" ).val( $( "#sliderHyperCount" ).slider( "value" ) );
+			initGenericSlider("#sliderHyperCount", "#HyperCount", 0, TargetCount, 1, CurrentCount, "lclabels")
 		};
 
 		$(function() {
+			initGenericSlider("#sliderAgentLevel", "#AgentLevel", 8, 16, 1, 16, "");
+			initGenericSlider("#sliderTargetCubes", "#TargetCount", 100, 200, 10, 100, "");
 			initHyperSlider(0, 16);
-		  });
-
-		$(function() {calc();})
+			calc();
+		});
 	</script>
 </body>
 </html>

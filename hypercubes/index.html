@@ -63,7 +63,7 @@
 				$("#Worth").text(Worth);
 			}
 
-			if (!isNaN(parseFloat(TargetCount)) && isFinite(TargetCount) && $.isNumeric(AgentLevel) && $.isNumeric(HyperCount)) {
+			if (!isNaN(parseFloat(TargetCount)) && isFinite(TargetCount) && !isNaN(parseFloat(AgentLevel)) && isFinite(AgentLevel) && !isNaN(parseFloat(HyperCount)) && isFinite(HyperCount)) {
 				const calcs = {
 					update: function(AgentLevel, TargetCount, HyperCount) {
 						this.TargetCount = Math.floor(TargetCount);
@@ -140,7 +140,7 @@
 					ctx.fillText(`${calcs.AddCubes} L8 Cubes`, 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
 				}
 
-				for (var lp = 0 ; lp < calcs.AL ; lp++) {
+				for (let lp = 0 ; lp < calcs.AL ; lp++) {
 					ctx.fillStyle = "#0000EE";
 					ctx.fillRect(2 * chartWidth, lp * HyperHeight / calcs.AL, chartWidth, HyperHeight / calcs.AL);
 					ctx.lineWidth = 2;
@@ -148,7 +148,7 @@
 					ctx.strokeRect(2 * chartWidth, lp * HyperHeight / calcs.AL, chartWidth, HyperHeight / calcs.AL);
 				};
 
-				for (var lp = 0 ; lp < calcs.AddCubes ; lp++) {
+				for (let lp = 0 ; lp < calcs.AddCubes ; lp++) {
 					ctx.fillStyle = "#0000AA";
 					ctx.fillRect(2 * chartWidth, HyperHeight + lp * CubeHeight / calcs.AddCubes, chartWidth, CubeHeight / calcs.AddCubes);
 					ctx.lineWidth = 2;
@@ -156,7 +156,7 @@
 					ctx.strokeRect(2 * chartWidth, HyperHeight + lp * CubeHeight / calcs.AddCubes, chartWidth, CubeHeight / calcs.AddCubes);
 				};
 
-				for (var lp = 0 ; lp < calcs.TargetCount ; lp++) {
+				for (let lp = 0 ; lp < calcs.TargetCount ; lp++) {
 					if (lp < calcs.Slots){
 						ctx.fillStyle = "#0000AA";
 						ctx.fillRect(3 * chartWidth, lp * chartHeight / calcs.TargetCount, chartWidth, chartHeight / calcs.TargetCount);

@@ -1,0 +1,51 @@
+body {
+	font-size : 24px;
+	font-family: Arial, sans-serif;
+	color : #286888 ;
+}
+
+input.inputMeasure {
+	width : 60px;
+	font-size : 24px;
+	font-family: 'Coda', cursive;
+	color : #286888;
+	background-color: LemonChiffon;
+}
+
+span.calc {
+	font-weight: bolder;
+	background-color: LightCyan;
+}
+
+div.layout {
+	margin : 0px;
+	vertical-align :  top ;
+	border : 10px solid #3891BD;
+	background-color : white;
+	display : inline-block;
+	padding : 10px;
+}
+
+div.Area {
+	border : 0px solid black;
+	display : inline-block;
+	vertical-align : top ;
+	padding : 5px;
+	float : left;
+}
+
+div.slider {
+	width:75%;
+	text-align: center;
+}
+
+div.slider label {
+	position: absolute;
+	width: 20px;
+	margin-left: -10px;
+	text-align: center;
+	margin-top: 20px;
+	font-size : 24px;
+	font-family: 'Coda', cursive;
+	color : #286888;
+}

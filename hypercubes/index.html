@@ -1,393 +1,316 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<link href='https://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css'>
-<title>Hypercube Equivalence</title>
-<script type="text/javascript">var jslang='EN';</script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
-<style>
-        body {
-            font-size : 24px;
-            font-family: Arial, sans-serif;
-            color : #286888 ;
-        }
-
-        input.inputMeasure {
-            width : 60px;
-            font-size : 24px;
-            font-family: 'Coda', cursive;
-            color : #286888;
-            background-color: LemonChiffon;
-        }
-
-        span.calc {
-            font-weight: bolder;
-            background-color: LightCyan;
-        }
-
-        div.layout {
-            margin : 0px;
-            vertical-align :  top ;
-            border : 10px solid #3891BD;
-            background-color : white;
-            display : inline-block;
-            padding : 10px;
-        }
-
-        div.Area {
-            border : 0px solid black;
-            display : inline-block;
-            vertical-align : top ;
-            padding : 5px;
-            float : left;
-        }
-
-        div.slider {
-            width:75%;
-            text-align: center;
-        }
-        
-        div.slider label {
-            position: absolute;
-            width: 20px;
-            margin-left: -10px;
-            text-align: center;
-            margin-top: 20px;
-            font-size : 24px;
-            font-family: 'Coda', cursive;
-            color : #286888;
-        }
-    </style>
+	<link href='https://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css'>
+	<title>Hypercube Equivalence</title>
+	<script type="text/javascript">var jslang='EN';</script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
+	<script type="text/javascript" src="ingress_items.js"></script>
+	<link rel="stylesheet" href="hypercubes.css">
 </head>
 <body>
-    <div id="layout" class="layout">
-        <div style="margin:30px;">
-        Agent Level
-        <div id="sliderAgentLevel" class="slider"></div></div>
-        <div style="margin:30px;">
-        Target Cubes
-        <div id="sliderTargetCubes" class="slider"></div></div>
-        <div style="margin:30px;">
-        Hypercube Count
-        <div id="sliderHyperCount" class="slider"></div></div>
+	<div id="layout" class="layout">
+		<div style="margin:30px;">
+		Agent Level
+		<div id="sliderAgentLevel" class="slider"></div></div>
+		<div style="margin:30px;">
+		Target Cubes
+		<div id="sliderTargetCubes" class="slider"></div></div>
+		<div style="margin:30px;">
+		Hypercube Count
+		<div id="sliderHyperCount" class="slider"></div></div>
 
-        <div id="inputs" class="Inputs Area" style="width : 33% ; clear : left;">
-            <p>Your Agent Level is <input name="AgentLevel" id="AgentLevel" type="text" class="inputMeasure" value="16" />.</p>
-            <p>Your team lead has recommended a target of <input name="TargetCount" id="TargetCount" type="text" class="inputMeasure" value="100" /> L8 Power Cubes for a total target capacity <span id="TargetXM" class="calc"></span> XM.</p>
-            <p>A Hypercube is worth <span id="Worth" class="calc"></span> L8C for you at your level - it stores much greater density of XM.</p>
-            <p>So we recommend having <span id="RL" class="calc"></span> Hypercubes to realize a maximum space savings of <span id="MaxSavings" class="calc"></span> inventory slots.
-            <p>You currently have <input name="HyperCount" id="HyperCount" type="text" class="inputMeasure" value="0" /> Hypercubes.</p>
-            <p>You will need an additional <span id="AddCubes" class="calc"></span> L8C to reach the target capacity.</p>
-            <p>You will be using a total of <span id="Slots" class="calc"></span> inventory slots for all cubes, a savings of <span id="Savings" class="calc"></span></p>
-            <p>You could still save <span id="CouldSave" class="calc"></span> more inventory slots for that target by getting <span id="MoreCubes" class="calc"></span> more Hypercubes.</p>
-        </div>
+		<div id="inputs" class="Inputs Area" style="width : 33% ; clear : left;">
+			<p>Your Agent Level is <input name="AgentLevel" id="AgentLevel" type="text" class="inputMeasure" value="16" />.</p>
+			<p>Your team lead has recommended a target of <input name="TargetCount" id="TargetCount" type="text" class="inputMeasure" value="100" /> L8 Power Cubes for a total target capacity <span id="TargetXM" class="calc"></span> XM.</p>
+			<p>A Hypercube is worth <span id="Worth" class="calc"></span> L8C for you at your level - it stores much greater density of XM.</p>
+			<p>So we recommend having <span id="RL" class="calc"></span> Hypercubes to realize a maximum space savings of <span id="MaxSavings" class="calc"></span> inventory slots.
+			<p>You currently have <input name="HyperCount" id="HyperCount" type="text" class="inputMeasure" value="0" /> Hypercubes.</p>
+			<p>You will need an additional <span id="AddCubes" class="calc"></span> L8C to reach the target capacity.</p>
+			<p>You will be using a total of <span id="Slots" class="calc"></span> inventory slots for all cubes, a savings of <span id="Savings" class="calc"></span></p>
+			<p>You could still save <span id="CouldSave" class="calc"></span> more inventory slots for that target by getting <span id="MoreCubes" class="calc"></span> more Hypercubes.</p>
+		</div>
 
-        <div id="Chart" class="Chart Area" style="width : 33% ;">
-            <canvas id="ChartCanvas" width="900", height="500" style="border : 5px solid black;"></canvas>
-        </div>
+		<div id="Chart" class="Chart Area" style="width : 33% ;">
+			<canvas id="ChartCanvas" width="900", height="500" style="border : 5px solid black;"></canvas>
+		</div>
 
-        <div id="Instructions" class="Instructions Area" style="width : 33% ;">
-        	<p>Instructions: All team inventory requirements include some amount of L8 Powercubes.  Hypercubes
-        	have more stored XM, but the capacity varies by agent level.  Enter the recommended number of cubes,
-        	your level and the number of actual Hypercubes you have farmed and this app will show you
-        	how many Hypercubes you need and how many additional L8 Powercubes you need.</p>
+		<div id="Instructions" class="Instructions Area" style="width : 33% ;">
+			<p>Instructions: All team inventory requirements include some amount of L8 Powercubes.  Hypercubes
+			have more stored XM, but the capacity varies by agent level.  Enter the recommended number of cubes,
+			your level and the number of actual Hypercubes you have farmed and this app will show you
+			how many Hypercubes you need and how many additional L8 Powercubes you need.</p>
 
-            <p>You can also convert any cubes (over L4) to Hypercubes by using kinetic capsules.</p>
+			<p>You can also convert any cubes (over L4) to Hypercubes by using kinetic capsules.</p>
 
-            <p>More cube capacity than is required for the anomaly is wasted space that could be used for gear you will use during the anomaly like bursters, shields, ultrastrikes, keys and resonators, so pump that extra XM into portals before the anomaly instead of carrying around useless gear.</p>
+			<p>More cube capacity than is required for the anomaly is wasted space that could be used for gear you will use during the anomaly like bursters, shields, ultrastrikes, keys and resonators, so pump that extra XM into portals before the anomaly instead of carrying around useless gear.</p>
 
-        	<p><a href="https://fevgames.net/ingress/ingress-guide/items/power-cube/">https://fevgames.net/ingress/ingress-guide/items/power-cube/</a></p>
-        </div>
-    </div>
+			<p><a href="https://fevgames.net/ingress/ingress-guide/items/power-cube/">https://fevgames.net/ingress/ingress-guide/items/power-cube/</a></p>
+		</div>
+	</div>
 
-    <script>
-        var STATS_POWERCUBE = {
-			"1": {XM: 1000},
-			"2": {XM: 2000},
-			"3": {XM: 3000},
-			"4": {XM: 4000},
-			"5": {XM: 5000},
-			"6": {XM: 6000},
-			"7": {XM: 7000},
-			"8": {XM: 8000}
-        };
+	<script>
+		function calc() {
+			var AgentLevel = $("#AgentLevel").val();
+			const TargetCount = $("#TargetCount").val();
+			const HyperCount = $("#HyperCount").val();
 
-        var STATS_HYPER = {
-			"1": {XM: 18000},
-			"2": {XM: 20250},
-			"3": {XM: 22500},
-			"4": {XM: 24750},
-			"5": {XM: 27000},
-			"6": {XM: 29250},
-			"7": {XM: 31500},
-			"8": {XM: 33750},
-			"9": {XM: 36000},
-			"10": {XM: 38400},
-			"11": {XM: 40800},
-			"12": {XM: 43200},
-			"13": {XM: 45600},
-			"14": {XM: 48000},
-			"15": {XM: 50400},
-			"16": {XM: 52800}
-        };
+			if ($.isNumeric(AgentLevel)) {
+				AgentLevel = Math.floor(AgentLevel);
+				const Worth = INGRESS_ITEMS.STATS_HYPER[AgentLevel].XM / INGRESS_ITEMS.STATS_POWERCUBE["8"].XM;
+				$("#Worth").text(Worth);
+			}
 
-        function calc() {
-            var TargetCount = $("#TargetCount").val();
-            var AgentLevel = $("#AgentLevel").val();
-            var HyperCount = $("#HyperCount").val();
-            var Worth;
+			if ($.isNumeric(TargetCount) && $.isNumeric(AgentLevel) && $.isNumeric(HyperCount)) {
+				const calcs = {
+					update: function(AgentLevel, TargetCount, HyperCount) {
+						this.TargetCount = Math.floor(TargetCount);
+						this.HyperCount = Math.floor(HyperCount);
+						this.RL = Math.ceil(this.TargetCount / (INGRESS_ITEMS.STATS_HYPER[AgentLevel].XM / INGRESS_ITEMS.STATS_POWERCUBE["8"].XM));
+						this.AL = this.HyperCount;
+						this.TargetXM = this.TargetCount * INGRESS_ITEMS.STATS_POWERCUBE["8"].XM;
+						this.HyperXM = this.AL * INGRESS_ITEMS.STATS_HYPER[AgentLevel].XM;
+						this.AddCubes = Math.min(this.TargetCount, Math.max(0, Math.ceil((this.TargetXM - this.HyperXM) / INGRESS_ITEMS.STATS_POWERCUBE["8"].XM)));
+						this.Slots = this.AL + this.AddCubes;
+						this.Savings = this.TargetCount - this.Slots;
+						this.MaxSavings = this.TargetCount - this.RL;
+						this.CubeXM = this.AddCubes * INGRESS_ITEMS.STATS_POWERCUBE["8"].XM;
+						this.ActualXM = this.HyperXM + this.CubeXM;
+						this.CouldSave = this.MaxSavings - this.Savings;
+						this.MoreCubes = this.RL - this.AL;
+					}
+				};
 
-            if ($.isNumeric(AgentLevel)) {
-                AgentLevel = Math.floor(AgentLevel);
-                Worth = STATS_HYPER[AgentLevel].XM / STATS_POWERCUBE["8"].XM;
-                $("#Worth").text(Worth);
-            }
+				calcs.update(AgentLevel, TargetCount, HyperCount);
 
-            if ($.isNumeric(TargetCount) && $.isNumeric(AgentLevel) && $.isNumeric(HyperCount)) {
-            	TargetCount = Math.floor(TargetCount);
-            	HyperCount = Math.floor(HyperCount);
-            	var RL = Math.ceil(TargetCount / (STATS_HYPER[AgentLevel].XM / STATS_POWERCUBE["8"].XM));
-            	var AL = HyperCount;
-                var TargetXM = TargetCount * STATS_POWERCUBE["8"].XM;
-                var HyperXM = AL * STATS_HYPER[AgentLevel].XM;
-            	var AddCubes = Math.min(TargetCount, Math.max(0, Math.ceil((TargetXM - HyperXM) / STATS_POWERCUBE["8"].XM)));
-            	var Slots = AL + AddCubes;
-            	var Savings = TargetCount - Slots;
-                var MaxSavings = TargetCount - RL;
-                var CubeXM = AddCubes * STATS_POWERCUBE["8"].XM;
-                var ActualXM = HyperXM + CubeXM;
-                var CouldSave = MaxSavings - Savings;
-                var MoreCubes = RL - AL;
+				$("#RL").text(calcs.RL);
+				$("#AddCubes").text(calcs.AddCubes);
+				$("#Slots").text(calcs.Slots);
+				$("#RCCompare").text(calcs.TargetCount);
+				$("#CouldSave").text(calcs.CouldSave);
+				$("#MoreCubes").text(calcs.MoreCubes);
+				$("#TargetXM").text(calcs.TargetXM);
+				$("#MaxSavings").text(calcs.MaxSavings);
+				$("#Savings").text(calcs.Savings);
 
-                $("#RL").text(RL);
-                $("#AddCubes").text(AddCubes);
-                $("#Slots").text(Slots);
-                $("#RCCompare").text(TargetCount);
-                $("#CouldSave").text(CouldSave);
-                $("#MoreCubes").text(MoreCubes);
-                $("#TargetXM").text(TargetXM);
-                $("#MaxSavings").text(MaxSavings);
-                $("#Savings").text(Savings);
+				var canvas = $("#ChartCanvas")[0];
+				var ChartTargetXM = Math.max(calcs.TargetXM, calcs.ActualXM);
+				var HyperPct = calcs.HyperXM / ChartTargetXM;
+				var CubePct = calcs.CubeXM / ChartTargetXM;
 
-	        	var canvas = $("#ChartCanvas")[0];
-	        	var ChartTargetXM = Math.max(TargetXM, ActualXM);
-	        	var HyperPct = HyperXM / ChartTargetXM;
-	        	var CubePct = CubeXM / ChartTargetXM;
+				canvas.height = ChartTargetXM / 2000;
+				chartHeight = canvas.height;
+				chartWidth = canvas.width / 4;
 
-	        	canvas.height = ChartTargetXM / 2000;
-	        	chartHeight = canvas.height;
-	        	chartWidth = canvas.width / 4;
+				var HyperHeight = chartHeight * HyperPct;
+				var CubeHeight = chartHeight * CubePct;
+				var padding = 10 ;
+				var fontHeight = 28;
+				var fontStyle = "normal normal " + fontHeight + "px Coda";
 
-	        	var HyperHeight = chartHeight * HyperPct;
-	        	var CubeHeight = chartHeight * CubePct;
-                var padding = 10 ;
-                var fontHeight = 28;
-                var fontStyle = "normal normal " + fontHeight + "px Coda";
+				var ctx = canvas.getContext("2d");
+				
+				ctx.fillStyle = "#FF0000";
+				ctx.fillRect(0, 0, chartWidth, chartHeight);
+				ctx.font = fontStyle;
+				ctx.fillStyle = "black";
+				ctx.textAlign = "center";
+				ctx.fillText(ChartTargetXM + " Actual XM", chartWidth / 2, (chartHeight + fontHeight) / 2, chartWidth - padding * 2);
+				ctx.fillText(calcs.TargetXM + " Target XM", chartWidth / 2, (chartHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
 
-	        	var ctx = canvas.getContext("2d");
-	        	
-	        	ctx.fillStyle = "#FF0000";
-	        	ctx.fillRect(0, 0, chartWidth, chartHeight);
-	        	ctx.font = fontStyle;
-	        	ctx.fillStyle = "black";
-	        	ctx.textAlign = "center";
-	        	ctx.fillText(ChartTargetXM + " Actual XM", chartWidth / 2, (chartHeight + fontHeight) / 2, chartWidth - padding * 2);
-                ctx.fillText(TargetXM + " Target XM", chartWidth / 2, (chartHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
+				ctx.fillStyle = "#0000FF";
+				ctx.fillRect(chartWidth, 0, chartWidth, HyperHeight);
+				ctx.font = fontStyle;
+				ctx.fillStyle = "black";
+				ctx.textAlign = "center";
+				if ( calcs.AL > 0 ) {
+					ctx.fillText(calcs.HyperXM + " Hypercube XM", 1.5 * chartWidth, (HyperHeight + fontHeight) / 2, chartWidth - padding * 2);
+					ctx.fillText(calcs.AL + " Hypercubes", 1.5 * chartWidth, (HyperHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
+				}
 
-	        	ctx.fillStyle = "#0000FF";
-	        	ctx.fillRect(chartWidth, 0, chartWidth, HyperHeight);
-	        	ctx.font = fontStyle;
-	        	ctx.fillStyle = "black";
-	        	ctx.textAlign = "center";
-	        	if ( AL > 0 ) {
-	        		ctx.fillText(HyperXM + " Hypercube XM", 1.5 * chartWidth, (HyperHeight + fontHeight) / 2, chartWidth - padding * 2);
-                    ctx.fillText(AL + " Hypercubes", 1.5 * chartWidth, (HyperHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
-	        	}
+				ctx.fillStyle = "#0000DD";
+				ctx.fillRect(chartWidth, HyperHeight, chartWidth, CubeHeight);
+				ctx.font = fontStyle;
+				ctx.fillStyle = "black";
+				ctx.textAlign = "center";
+				if (calcs.AddCubes > 0) {
+					ctx.fillText(calcs.CubeXM + " Cube XM", 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2, chartWidth - padding * 2);
+					ctx.fillText(calcs.AddCubes + " L8 Cubes", 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
+				}
 
-	        	ctx.fillStyle = "#0000DD";
-	        	ctx.fillRect(chartWidth, HyperHeight, chartWidth, CubeHeight);
-	        	ctx.font = fontStyle;
-	        	ctx.fillStyle = "black";
-	        	ctx.textAlign = "center";
-				if (AddCubes > 0) {
-	        		ctx.fillText(CubeXM + " Cube XM", 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2, chartWidth - padding * 2);
-                    ctx.fillText(AddCubes + " L8 Cubes", 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
-		        }
+				for (var lp = 0 ; lp < calcs.AL ; lp++) {
+					ctx.fillStyle = "#0000EE";
+					ctx.fillRect(2 * chartWidth, lp * HyperHeight / calcs.AL, chartWidth, HyperHeight / calcs.AL);
+					ctx.lineWidth = 2;
+					ctx.strokeStyle = "black";
+					ctx.strokeRect(2 * chartWidth, lp * HyperHeight / calcs.AL, chartWidth, HyperHeight / calcs.AL);
+				};
 
-                for (var lp = 0 ; lp < AL ; lp++) {
-                    ctx.fillStyle = "#0000EE";
-                    ctx.fillRect(2 * chartWidth, lp * HyperHeight / AL, chartWidth, HyperHeight / AL);
-                    ctx.lineWidth = 2;
-                    ctx.strokeStyle = "black";
-                    ctx.strokeRect(2 * chartWidth, lp * HyperHeight / AL, chartWidth, HyperHeight / AL);
-                };
+				for (var lp = 0 ; lp < calcs.AddCubes ; lp++) {
+					ctx.fillStyle = "#0000AA";
+					ctx.fillRect(2 * chartWidth, HyperHeight + lp * CubeHeight / calcs.AddCubes, chartWidth, CubeHeight / calcs.AddCubes);
+					ctx.lineWidth = 2;
+					ctx.strokeStyle = "black";
+					ctx.strokeRect(2 * chartWidth, HyperHeight + lp * CubeHeight / calcs.AddCubes, chartWidth, CubeHeight / calcs.AddCubes);
+				};
 
-                for (var lp = 0 ; lp < AddCubes ; lp++) {
-                    ctx.fillStyle = "#0000AA";
-                    ctx.fillRect(2 * chartWidth, HyperHeight + lp * CubeHeight / AddCubes, chartWidth, CubeHeight / AddCubes);
-                    ctx.lineWidth = 2;
-                    ctx.strokeStyle = "black";
-                    ctx.strokeRect(2 * chartWidth, HyperHeight + lp * CubeHeight / AddCubes, chartWidth, CubeHeight / AddCubes);
-                };
+				for (var lp = 0 ; lp < calcs.TargetCount ; lp++) {
+					if (lp < Slots){
+						ctx.fillStyle = "#0000AA";
+						ctx.fillRect(3 * chartWidth, lp * chartHeight / calcs.TargetCount, chartWidth, chartHeight / calcs.TargetCount);
+						ctx.lineWidth = 2;
+						ctx.strokeStyle = "black";
+						ctx.strokeRect(3 * chartWidth, lp * chartHeight / calcs.TargetCount, chartWidth, chartHeight / calcs.TargetCount);
+					}
+					else {
+						//ctx.fillStyle = "#FFFFFF";
+						//ctx.fillRect(3 * chartWidth, lp * chartHeight / TargetCount, chartWidth, chartHeight / TargetCount);
+						//ctx.lineWidth = 2;
+						// ctx.strokeStyle = "black";
+						// ctx.strokeRect(3 * chartWidth, lp * chartHeight / TargetCount, chartWidth, chartHeight / TargetCount);
+					}
+				}
 
-                for (var lp = 0 ; lp < TargetCount ; lp++) {
-                    if (lp < Slots){
-                        ctx.fillStyle = "#0000AA";
-                        ctx.fillRect(3 * chartWidth, lp * chartHeight / TargetCount, chartWidth, chartHeight / TargetCount);
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = "black";
-                        ctx.strokeRect(3 * chartWidth, lp * chartHeight / TargetCount, chartWidth, chartHeight / TargetCount);
-                    }
-                    else {
-                        //ctx.fillStyle = "#FFFFFF";
-                        //ctx.fillRect(3 * chartWidth, lp * chartHeight / TargetCount, chartWidth, chartHeight / TargetCount);
-                        //ctx.lineWidth = 2;
-                        // ctx.strokeStyle = "black";
-                        // ctx.strokeRect(3 * chartWidth, lp * chartHeight / TargetCount, chartWidth, chartHeight / TargetCount);
-                    }
-                }
+				ctx.font = fontStyle;
+				ctx.fillStyle = "black";
+				ctx.textAlign = "center";
+				ctx.fillText(calcs.Savings + " Slots Freed", 3.5 * chartWidth, Slots * chartHeight / calcs.TargetCount + (calcs.TargetCount - calcs.Slots) * chartHeight / (2 * calcs.TargetCount), chartWidth - padding * 2);
 
-                ctx.font = fontStyle;
-                ctx.fillStyle = "black";
-                ctx.textAlign = "center";
-                ctx.fillText(Savings + " Slots Freed", 3.5 * chartWidth, Slots * chartHeight / TargetCount + (TargetCount - Slots) * chartHeight / (2 * TargetCount), chartWidth - padding * 2);
+				initHyperSlider(calcs.HyperCount, calcs.RL);
+			}
+			else {
+				$("#RL").text("");
+				$("#AddCubes").text("");
+				$("#Slots").text("");
+				$("#RCCompare").text("");
+				$("#CouldSave").text("");
+				$("#MoreCubes").text("");
+				$("#TargetXM").text("");
+				$("#MaxSavings").text("");
+				$("#Savings").text("Savings");
+			}
+		}
 
-                initHyperSlider(HyperCount, RL);
-            }
-            else {
-                $("#RL").text("");
-                $("#AL").val("");
-                $("#AddCubes").text("");
-                $("#Slots").text("");
-                $("#RCCompare").text("");
-                $("#CouldSave").text("");
-                $("#MoreCubes").text("");
-                $("#TargetXM").text("");
-                $("#MaxSavings").text("");
-                $("#Savings").text("Savings");
-            }
-        }
+		$(".inputMeasure").on("input", function () { calc(); });
+		$(".inputMeasure").on("change", function () { calc(); });
 
-        $(".inputMeasure").on("input", function () { calc(); });
-        $(".inputMeasure").on("change", function () { calc(); });
+		$(function() {
+			$( "#sliderAgentLevel" ).slider({
+			  value:16,
+			  min: 8,
+			  max: 16,
+			  step: 1,
+			  slide: function( event, ui ) {
+				$( "#AgentLevel" ).val( ui.value );
+				calc();
+			  }
+			}).each(function() {
+				// Add labels to slider whose values 
+				// are specified by min, max
 
-        $(function() {
-            $( "#sliderAgentLevel" ).slider({
-              value:16,
-              min: 8,
-              max: 16,
-              step: 1,
-              slide: function( event, ui ) {
-                $( "#AgentLevel" ).val( ui.value );
-                calc();
-              }
-            }).each(function() {
-                // Add labels to slider whose values 
-                // are specified by min, max
+				// Get the options for this slider (specified above)
+				// var opt = $(this).data().uiSlider.options;
+				var opt = {
+					max:16,min:8
+				};
 
-                // Get the options for this slider (specified above)
-                // var opt = $(this).data().uiSlider.options;
-                var opt = {
-                    max:16,min:8
-                };
+				// Get the number of possible values
+				var vals = opt.max - opt.min;
 
-                // Get the number of possible values
-                var vals = opt.max - opt.min;
+				// Position the labels
+				for (var i = 0; i <= vals; i++) {
 
-                // Position the labels
-                for (var i = 0; i <= vals; i++) {
+					// Create a new element and position it with percentages
+					var el = $('<label>' + (i + opt.min) + '</label>').css('left', (i/vals*100) + '%');
 
-                    // Create a new element and position it with percentages
-                    var el = $('<label>' + (i + opt.min) + '</label>').css('left', (i/vals*100) + '%');
+					// Add the element inside #slider
+					$("#sliderAgentLevel").append(el);
+				}
+			});
 
-                    // Add the element inside #slider
-                    $("#sliderAgentLevel").append(el);
-                }
-            });
+			$( "#AgentLevel" ).val( $( "#sliderAgentLevel" ).slider( "value" ) );
+		  });
 
-            $( "#AgentLevel" ).val( $( "#sliderAgentLevel" ).slider( "value" ) );
-          });
+		$(function() {
+			$( "#sliderTargetCubes" ).slider({
+			  value:100,
+			  min: 100,
+			  max: 150,
+			  step: 5,
+			  slide: function( event, ui ) {
+				$( "#TargetCount" ).val( ui.value );
+				calc();
+			  }
+			}).each(function() {
+				// Add labels to slider whose values 
+				// are specified by min, max
 
-        $(function() {
-            $( "#sliderTargetCubes" ).slider({
-              value:100,
-              min: 100,
-              max: 150,
-              step: 5,
-              slide: function( event, ui ) {
-                $( "#TargetCount" ).val( ui.value );
-                calc();
-              }
-            }).each(function() {
-                // Add labels to slider whose values 
-                // are specified by min, max
+				// Get the options for this slider (specified above)
+				// var opt = $(this).data().uiSlider.options;
+				var opt = {
+					max:150,min:100,step:5
+				};
 
-                // Get the options for this slider (specified above)
-                // var opt = $(this).data().uiSlider.options;
-                var opt = {
-                    max:150,min:100,step:5
-                };
+				// Get the number of possible values
+				var vals = ((opt.max - opt.min) / (opt.step));
 
-                // Get the number of possible values
-                var vals = ((opt.max - opt.min) / (opt.step));
+				// Position the labels
+				for (var i = 0; i <= vals; i++) {
 
-                // Position the labels
-                for (var i = 0; i <= vals; i++) {
+					// Create a new element and position it with percentages
+					var el = $('<label>' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
 
-                    // Create a new element and position it with percentages
-                    var el = $('<label>' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
+					// Add the element inside #slider
+					$("#sliderTargetCubes").append(el);
+				}
+			});
+			$( "#TargetCount" ).val( $( "#sliderTargetCubes" ).slider( "value" ) );
+		  });
 
-                    // Add the element inside #slider
-                    $("#sliderTargetCubes").append(el);
-                }
-            });
-            $( "#TargetCount" ).val( $( "#sliderTargetCubes" ).slider( "value" ) );
-          });
+		function initHyperSlider(CurrentCount, TargetCount) {
+			$(".lclabels").remove();
+			$( "#sliderHyperCount" ).slider({
+			  value:CurrentCount,
+			  min: 0,
+			  max: TargetCount,
+			  step: 1,
+			  slide: function( event, ui ) {
+				$( "#HyperCount" ).val( ui.value );
+				calc();
+			  }
+			}).each(function() {
+				// Add labels to slider whose values 
+				// are specified by min, max
 
-        function initHyperSlider(CurrentCount, TargetCount) {
-            $(".lclabels").remove();
-            $( "#sliderHyperCount" ).slider({
-              value:CurrentCount,
-              min: 0,
-              max: TargetCount,
-              step: 1,
-              slide: function( event, ui ) {
-                $( "#HyperCount" ).val( ui.value );
-                calc();
-              }
-            }).each(function() {
-                // Add labels to slider whose values 
-                // are specified by min, max
+				// Get the options for this slider (specified above)
+				// var opt = $(this).data().uiSlider.options;
+				var opt = {
+					max:TargetCount,min:0,step:1
+				};
 
-                // Get the options for this slider (specified above)
-                // var opt = $(this).data().uiSlider.options;
-                var opt = {
-                    max:TargetCount,min:0,step:1
-                };
+				// Get the number of possible values
+				var vals = ((opt.max - opt.min) / (opt.step));
 
-                // Get the number of possible values
-                var vals = ((opt.max - opt.min) / (opt.step));
+				// Position the labels
+				for (var i = 0; i <= vals; i++) {
 
-                // Position the labels
-                for (var i = 0; i <= vals; i++) {
+					// Create a new element and position it with percentages
+					var el = $('<label class="lclabels">' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
 
-                    // Create a new element and position it with percentages
-                    var el = $('<label class="lclabels">' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
+					// Add the element inside #slider
+					$("#sliderHyperCount").append(el);
+				}
+			});
+			$( "#HyperCount" ).val( $( "#sliderHyperCount" ).slider( "value" ) );
+		};
 
-                    // Add the element inside #slider
-                    $("#sliderHyperCount").append(el);
-                }
-            });
-            $( "#HyperCount" ).val( $( "#sliderHyperCount" ).slider( "value" ) );
-        };
+		$(function() {
+			initHyperSlider(0, 16);
+		  });
 
-        $(function() {
-            initHyperSlider(0, 16);
-          });
-
-        $(function() {calc();})
-    </script>
+		$(function() {calc();})
+	</script>
 </body>
 </html>

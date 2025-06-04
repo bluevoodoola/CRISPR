@@ -63,7 +63,7 @@
 				$("#Worth").text(Worth);
 			}
 
-			if ($.isNumeric(TargetCount) && $.isNumeric(AgentLevel) && $.isNumeric(HyperCount)) {
+			if (!isNaN(parseFloat(TargetCount)) && isFinite(TargetCount) && $.isNumeric(AgentLevel) && $.isNumeric(HyperCount)) {
 				const calcs = {
 					update: function(AgentLevel, TargetCount, HyperCount) {
 						this.TargetCount = Math.floor(TargetCount);
@@ -101,8 +101,8 @@
 				var CubePct = calcs.CubeXM / ChartTargetXM;
 
 				canvas.height = ChartTargetXM / 2000;
-				chartHeight = canvas.height;
-				chartWidth = canvas.width / 4;
+				const chartHeight = canvas.height;
+				const chartWidth = canvas.width / 4;
 
 				var HyperHeight = chartHeight * HyperPct;
 				var CubeHeight = chartHeight * CubePct;
@@ -117,8 +117,8 @@
 				ctx.font = fontStyle;
 				ctx.fillStyle = "black";
 				ctx.textAlign = "center";
-				ctx.fillText(ChartTargetXM + " Actual XM", chartWidth / 2, (chartHeight + fontHeight) / 2, chartWidth - padding * 2);
-				ctx.fillText(calcs.TargetXM + " Target XM", chartWidth / 2, (chartHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
+				ctx.fillText(`${ChartTargetXM} Actual XM`, chartWidth / 2, (chartHeight + fontHeight) / 2, chartWidth - padding * 2);
+				ctx.fillText(`${calcs.TargetXM} Target XM`, chartWidth / 2, (chartHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
 
 				ctx.fillStyle = "#0000FF";
 				ctx.fillRect(chartWidth, 0, chartWidth, HyperHeight);
@@ -126,8 +126,8 @@
 				ctx.fillStyle = "black";
 				ctx.textAlign = "center";
 				if ( calcs.AL > 0 ) {
-					ctx.fillText(calcs.HyperXM + " Hypercube XM", 1.5 * chartWidth, (HyperHeight + fontHeight) / 2, chartWidth - padding * 2);
-					ctx.fillText(calcs.AL + " Hypercubes", 1.5 * chartWidth, (HyperHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
+					ctx.fillText(`${calcs.HyperXM} Hypercube XM`, 1.5 * chartWidth, (HyperHeight + fontHeight) / 2, chartWidth - padding * 2);
+					ctx.fillText(`${calcs.AL} Hypercubes`, 1.5 * chartWidth, (HyperHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
 				}
 
 				ctx.fillStyle = "#0000DD";
@@ -136,8 +136,8 @@
 				ctx.fillStyle = "black";
 				ctx.textAlign = "center";
 				if (calcs.AddCubes > 0) {
-					ctx.fillText(calcs.CubeXM + " Cube XM", 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2, chartWidth - padding * 2);
-					ctx.fillText(calcs.AddCubes + " L8 Cubes", 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
+					ctx.fillText(`${calcs.CubeXM} Cube XM`, 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2, chartWidth - padding * 2);
+					ctx.fillText(`${calcs.AddCubes} L8 Cubes`, 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
 				}
 
 				for (var lp = 0 ; lp < calcs.AL ; lp++) {
@@ -157,7 +157,7 @@
 				};
 
 				for (var lp = 0 ; lp < calcs.TargetCount ; lp++) {
-					if (lp < Slots){
+					if (lp < calcs.Slots){
 						ctx.fillStyle = "#0000AA";
 						ctx.fillRect(3 * chartWidth, lp * chartHeight / calcs.TargetCount, chartWidth, chartHeight / calcs.TargetCount);
 						ctx.lineWidth = 2;

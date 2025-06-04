@@ -85,15 +85,7 @@
 
 				calcs.update(AgentLevel, TargetCount, HyperCount);
 
-				$("#RL").text(calcs.RL);
-				$("#AddCubes").text(calcs.AddCubes);
-				$("#Slots").text(calcs.Slots);
-				$("#RCCompare").text(calcs.TargetCount);
-				$("#CouldSave").text(calcs.CouldSave);
-				$("#MoreCubes").text(calcs.MoreCubes);
-				$("#TargetXM").text(calcs.TargetXM);
-				$("#MaxSavings").text(calcs.MaxSavings);
-				$("#Savings").text(calcs.Savings);
+				$(".calc").each(function() {$(this).text(calcs["this.id"])});
 
 				var canvas = $("#ChartCanvas")[0];
 				var ChartTargetXM = Math.max(calcs.TargetXM, calcs.ActualXM);
@@ -181,15 +173,7 @@
 				initHyperSlider(calcs.HyperCount, calcs.RL);
 			}
 			else {
-				$("#RL").text("");
-				$("#AddCubes").text("");
-				$("#Slots").text("");
-				$("#RCCompare").text("");
-				$("#CouldSave").text("");
-				$("#MoreCubes").text("");
-				$("#TargetXM").text("");
-				$("#MaxSavings").text("");
-				$("#Savings").text("Savings");
+				$(".calc").each(function() {$(this).text("")});
 			}
 		}
 

@@ -57,7 +57,7 @@
 			const TargetCount = $("#TargetCount").val();
 			const HyperCount = $("#HyperCount").val();
 
-			if ($.isNumeric(AgentLevel)) {
+			if (!isNaN(parseFloat(AgentLevel)) && isFinite(AgentLevel)) {
 				AgentLevel = Math.floor(AgentLevel);
 				const Worth = INGRESS_ITEMS.STATS_HYPER[AgentLevel].XM / INGRESS_ITEMS.STATS_POWERCUBE["8"].XM;
 				$("#Worth").text(Worth);

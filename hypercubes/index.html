@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="ingress_items.js"></script>
 	<link rel="stylesheet" href="hypercubes.css">
 	<script type="text/javascript" src="calculator.js"></script>
+	<script type="text/javascript" src="chart.js"></script>
 </head>
 <body>
 	<div id="layout" class="layout">
@@ -54,105 +55,21 @@
 
 	<script>
 		function calc() {
-			const AgentLevel = $("#AgentLevel").val();
-			const TargetCount = $("#TargetCount").val();
-			const HyperCount = $("#HyperCount").val();
+			const calculator = new Calculator($("#AgentLevel").val(), $("#TargetCount").val(), $("#HyperCount").val());
 
-			const calcs = new Calculator(AgentLevel, TargetCount, HyperCount);
-
-			if (calcs.CanCalculate) {
-				$(".calc").each(function() {$(this).text(calcs[this.id])});
+			if (calculator.CanCalculate) {
+				$(".calc").each(function() {$(this).text(calculator[this.id])});
 
 				var canvas = $("#ChartCanvas")[0];
-				var ChartTargetXM = Math.max(calcs.TargetXM, calcs.ActualXM);
-				var HyperPct = calcs.HyperXM / ChartTargetXM;
-				var CubePct = calcs.CubeXM / ChartTargetXM;
 
-				canvas.height = ChartTargetXM / 2000;
-				const chartHeight = canvas.height;
-				const chartWidth = canvas.width / 4;
-
-				var HyperHeight = chartHeight * HyperPct;
-				var CubeHeight = chartHeight * CubePct;
-				var padding = 10 ;
-				var fontHeight = 28;
-				var fontStyle = "normal normal " + fontHeight + "px Coda";
-
-				var ctx = canvas.getContext("2d");
-				
-				ctx.fillStyle = "#FF0000";
-				ctx.fillRect(0, 0, chartWidth, chartHeight);
-				ctx.font = fontStyle;
-				ctx.fillStyle = "black";
-				ctx.textAlign = "center";
-				ctx.fillText(`${ChartTargetXM} Actual XM`, chartWidth / 2, (chartHeight + fontHeight) / 2, chartWidth - padding * 2);
-				ctx.fillText(`${calcs.TargetXM} Target XM`, chartWidth / 2, (chartHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
-
-				ctx.fillStyle = "#0000FF";
-				ctx.fillRect(chartWidth, 0, chartWidth, HyperHeight);
-				ctx.font = fontStyle;
-				ctx.fillStyle = "black";
-				ctx.textAlign = "center";
-				if ( calcs.AL > 0 ) {
-					ctx.fillText(`${calcs.HyperXM} Hypercube XM`, 1.5 * chartWidth, (HyperHeight + fontHeight) / 2, chartWidth - padding * 2);
-					ctx.fillText(`${calcs.AL} Hypercubes`, 1.5 * chartWidth, (HyperHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
-				}
-
-				ctx.fillStyle = "#0000DD";
-				ctx.fillRect(chartWidth, HyperHeight, chartWidth, CubeHeight);
-				ctx.font = fontStyle;
-				ctx.fillStyle = "black";
-				ctx.textAlign = "center";
-				if (calcs.AddCubes > 0) {
-					ctx.fillText(`${calcs.CubeXM} Cube XM`, 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2, chartWidth - padding * 2);
-					ctx.fillText(`${calcs.AddCubes} L8 Cubes`, 1.5 * chartWidth, HyperHeight + (CubeHeight + fontHeight) / 2 + fontHeight, chartWidth - padding * 2);
-				}
-
-				for (let lp = 0 ; lp < calcs.AL ; lp++) {
-					ctx.fillStyle = "#0000EE";
-					ctx.fillRect(2 * chartWidth, lp * HyperHeight / calcs.AL, chartWidth, HyperHeight / calcs.AL);
-					ctx.lineWidth = 2;
-					ctx.strokeStyle = "black";
-					ctx.strokeRect(2 * chartWidth, lp * HyperHeight / calcs.AL, chartWidth, HyperHeight / calcs.AL);
-				};
-
-				for (let lp = 0 ; lp < calcs.AddCubes ; lp++) {
-					ctx.fillStyle = "#0000AA";
-					ctx.fillRect(2 * chartWidth, HyperHeight + lp * CubeHeight / calcs.AddCubes, chartWidth, CubeHeight / calcs.AddCubes);
-					ctx.lineWidth = 2;
-					ctx.strokeStyle = "black";
-					ctx.strokeRect(2 * chartWidth, HyperHeight + lp * CubeHeight / calcs.AddCubes, chartWidth, CubeHeight / calcs.AddCubes);
-				};
-
-				for (let lp = 0 ; lp < calcs.TargetCount ; lp++) {
-					if (lp < calcs.Slots){
-						ctx.fillStyle = "#0000AA";
-						ctx.fillRect(3 * chartWidth, lp * chartHeight / calcs.TargetCount, chartWidth, chartHeight / calcs.TargetCount);
-						ctx.lineWidth = 2;
-						ctx.strokeStyle = "black";
-						ctx.strokeRect(3 * chartWidth, lp * chartHeight / calcs.TargetCount, chartWidth, chartHeight / calcs.TargetCount);
-					}
-					else {
-						//ctx.fillStyle = "#FFFFFF";
-						//ctx.fillRect(3 * chartWidth, lp * chartHeight / TargetCount, chartWidth, chartHeight / TargetCount);
-						//ctx.lineWidth = 2;
-						// ctx.strokeStyle = "black";
-						// ctx.strokeRect(3 * chartWidth, lp * chartHeight / TargetCount, chartWidth, chartHeight / TargetCount);
-					}
-				}
-
-				ctx.font = fontStyle;
-				ctx.fillStyle = "black";
-				ctx.textAlign = "center";
-				ctx.fillText(`${calcs.Savings} Slots Freed`, 3.5 * chartWidth, calcs.Slots * chartHeight / calcs.TargetCount + (calcs.TargetCount - calcs.Slots) * chartHeight / (2 * calcs.TargetCount), chartWidth - padding * 2);
-
-				initHyperSlider(calcs.HyperCount, calcs.RL);
+				drawChart(canvas, calculator);
+				initHyperSlider(calculator.HyperCount, calculator.RL);
 			}
 			else {
 				$(".calc").each(function() {$(this).text("")});
-				
-				if (calcs.ValidAgentLevel) {
-					$("#Worth").text(calcs.Worth);
+
+				if (calculator.ValidAgentLevel) {
+					$("#Worth").text(calculator.Worth);
 				}
 			}
 		}

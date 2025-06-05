@@ -168,7 +168,7 @@
 				ctx.font = fontStyle;
 				ctx.fillStyle = "black";
 				ctx.textAlign = "center";
-				ctx.fillText(calcs.Savings + " Slots Freed", 3.5 * chartWidth, calcs.Slots * chartHeight / calcs.TargetCount + (calcs.TargetCount - calcs.Slots) * chartHeight / (2 * calcs.TargetCount), chartWidth - padding * 2);
+				ctx.fillText(`${calcs.Savings} Slots Freed`, 3.5 * chartWidth, calcs.Slots * chartHeight / calcs.TargetCount + (calcs.TargetCount - calcs.Slots) * chartHeight / (2 * calcs.TargetCount), chartWidth - padding * 2);
 
 				initHyperSlider(calcs.HyperCount, calcs.RL);
 			}
@@ -180,20 +180,24 @@
 		$(".inputMeasure").on("input change", function () { calc(); });
 
 		function initGenericSlider(SliderSelector, ValueSelector, min, max, step, value, className) {
+			if ( className !== "" ) {
+				$(`.${className}`).remove();
+			}
+
 			$( SliderSelector ).slider({
-			  value: value,
-			  min: min,
-			  max: max,
-			  step: step,
-			  slide: function( event, ui ) {
-				$( ValueSelector ).val( ui.value );
-				calc();
-			  }
+				value: value,
+				min: min,
+				max: max,
+				step: step,
+				slide: function( event, ui ) {
+					$( ValueSelector ).val( ui.value );
+					calc();
+				}
 			}).each(function() {
 				var opt = $(this).data().uiSlider.options;
 				var vals = ((opt.max - opt.min) / (opt.step));
 				for (var i = 0; i <= vals; i++) {
-					var el = $('<label' + (className !== '' ? ' class="' + className + '"' : '') + '>' + (opt.min + i * opt.step) + '</label>').css('left', (i/vals*100) + '%');
+					var el = $(`<label class="${className}">${opt.min + i * opt.step}</label>`).css('left', `${(i/vals*100)}%`);
 					$(this).append(el);
 				}
 			});
@@ -202,7 +206,6 @@
 		}
 
 		function initHyperSlider(CurrentCount, TargetCount) {
-			$(".lclabels").remove();
 			initGenericSlider("#sliderHyperCount", "#HyperCount", 0, TargetCount, 1, CurrentCount, "lclabels")
 		};
 

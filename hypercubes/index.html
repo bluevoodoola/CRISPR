@@ -85,7 +85,7 @@
 
 				calcs.update(AgentLevel, TargetCount, HyperCount);
 
-				$(".calc").each(function() {$(this).text(calcs["this.id"])});
+				$(".calc").each(function() {$(this).text(calcs[this.id])});
 
 				var canvas = $("#ChartCanvas")[0];
 				var ChartTargetXM = Math.max(calcs.TargetXM, calcs.ActualXM);
@@ -177,8 +177,7 @@
 			}
 		}
 
-		$(".inputMeasure").on("input", function () { calc(); });
-		$(".inputMeasure").on("change", function () { calc(); });
+		$(".inputMeasure").on("input change", function () { calc(); });
 
 		function initGenericSlider(SliderSelector, ValueSelector, min, max, step, value, className) {
 			$( SliderSelector ).slider({

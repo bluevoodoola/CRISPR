@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="ingress_items.js"></script>
 	<link rel="stylesheet" href="hypercubes.css">
+	<script type="text/javascript" src="calculator.js"></script>
 </head>
 <body>
 	<div id="layout" class="layout">
@@ -53,38 +54,13 @@
 
 	<script>
 		function calc() {
-			var AgentLevel = $("#AgentLevel").val();
+			const AgentLevel = $("#AgentLevel").val();
 			const TargetCount = $("#TargetCount").val();
 			const HyperCount = $("#HyperCount").val();
 
-			if (!isNaN(parseFloat(AgentLevel)) && isFinite(AgentLevel)) {
-				AgentLevel = Math.floor(AgentLevel);
-				const Worth = INGRESS_ITEMS.STATS_HYPER[AgentLevel].XM / INGRESS_ITEMS.STATS_POWERCUBE["8"].XM;
-				$("#Worth").text(Worth);
-			}
+			const calcs = new Calculator(AgentLevel, TargetCount, HyperCount);
 
-			if (!isNaN(parseFloat(TargetCount)) && isFinite(TargetCount) && !isNaN(parseFloat(AgentLevel)) && isFinite(AgentLevel) && !isNaN(parseFloat(HyperCount)) && isFinite(HyperCount)) {
-				const calcs = {
-					update: function(AgentLevel, TargetCount, HyperCount) {
-						this.TargetCount = Math.floor(TargetCount);
-						this.HyperCount = Math.floor(HyperCount);
-						this.RL = Math.ceil(this.TargetCount / (INGRESS_ITEMS.STATS_HYPER[AgentLevel].XM / INGRESS_ITEMS.STATS_POWERCUBE["8"].XM));
-						this.AL = this.HyperCount;
-						this.TargetXM = this.TargetCount * INGRESS_ITEMS.STATS_POWERCUBE["8"].XM;
-						this.HyperXM = this.AL * INGRESS_ITEMS.STATS_HYPER[AgentLevel].XM;
-						this.AddCubes = Math.min(this.TargetCount, Math.max(0, Math.ceil((this.TargetXM - this.HyperXM) / INGRESS_ITEMS.STATS_POWERCUBE["8"].XM)));
-						this.Slots = this.AL + this.AddCubes;
-						this.Savings = this.TargetCount - this.Slots;
-						this.MaxSavings = this.TargetCount - this.RL;
-						this.CubeXM = this.AddCubes * INGRESS_ITEMS.STATS_POWERCUBE["8"].XM;
-						this.ActualXM = this.HyperXM + this.CubeXM;
-						this.CouldSave = this.MaxSavings - this.Savings;
-						this.MoreCubes = this.RL - this.AL;
-					}
-				};
-
-				calcs.update(AgentLevel, TargetCount, HyperCount);
-
+			if (calcs.CanCalculate) {
 				$(".calc").each(function() {$(this).text(calcs[this.id])});
 
 				var canvas = $("#ChartCanvas")[0];
@@ -174,6 +150,10 @@
 			}
 			else {
 				$(".calc").each(function() {$(this).text("")});
+				
+				if (calcs.ValidAgentLevel) {
+					$("#Worth").text(calcs.Worth);
+				}
 			}
 		}
 

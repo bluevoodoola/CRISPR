@@ -114,7 +114,7 @@ class Anomaly {
 const series = {
     "2025Q2": new Series("2025Q2", "+Theta")
     , "2025Q3": new Series("2025Q3", "+Delta")
-    , "2025Q4": new Series("2025Q4", "Unknown")
+    , "2025Q4": new Series("2025Q4", "+Beta")
 }
 ;
 

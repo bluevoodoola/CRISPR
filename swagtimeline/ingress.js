@@ -115,17 +115,21 @@ const series = {
     "2025Q2": new Series("2025Q2", "+Theta")
     , "2025Q3": new Series("2025Q3", "+Delta")
     , "2025Q4": new Series("2025Q4", "+Beta")
+    , "2026Q1": new Series("2026Q1", "Unknown")
 }
 ;
 
 const anomalies = [
-    new Anomaly('2025/06/14', series["2025Q2"], "2", "Perth, Chemnitz", swag)
-    , new Anomaly('2025/08/16', series["2025Q3"], "1", "Malacca, Portland", swag)
-    , new Anomaly('2025/08/23', series["2025Q3"], "2", "Gothenburg, Quebec", swag)
-    , new Anomaly('2025/09/20', series["2025Q3"], "3", "Denpasar, Cambridge", swag)
+    // new Anomaly('2025/06/14', series["2025Q2"], "2", "Perth, Chemnitz", swag)
+    // , new Anomaly('2025/08/16', series["2025Q3"], "1", "Malacca, Portland", swag)
+    // , new Anomaly('2025/08/23', series["2025Q3"], "2", "Gothenburg, Quebec", swag)
+    new Anomaly('2025/09/20', series["2025Q3"], "3", "Denpasar, Cambridge", swag)
     , new Anomaly('2025/10/18', series["2025Q4"], "1", "Valencia, São Paulo", swag)
     , new Anomaly('2025/10/25', series["2025Q4"], "2", "Wellington, Houston", swag)
     , new Anomaly('2025/11/15', series["2025Q4"], "3", "Taoyuan, The Hague", swag)
+    , new Anomaly('2026/02/28', series["2026Q1"], "1", "Lisbon, Charlotte", swag)
+    , new Anomaly('2026/03/14', series["2026Q1"], "2", "Hong Kong, Zagreb", swag)
+    , new Anomaly('2026/03/21', series["2026Q1"], "3", "Hyderabad, Buenos Aires", swag)
 ]
 ;
 

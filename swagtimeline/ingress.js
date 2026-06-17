@@ -1,7 +1,10 @@
 class Series {
-    constructor(handle, name) {
+    constructor(handle, name, url) {
         this.handle = handle;
         this.name = name;
+        // Link to the public release/overview page for this series on
+        // https://ingress.com/news (may be null if no release is published yet).
+        this.url = url !== undefined ? url : null;
     }
 }
 
@@ -120,39 +123,58 @@ class Anomaly {
     }
 }
 
-const series = {
-    "2025Q2": new Series("2025Q2", "+Theta")
-    , "2025Q3": new Series("2025Q3", "+Delta")
-    , "2025Q4": new Series("2025Q4", "+Beta")
-    , "2026Q1": new Series("2026Q1", "+Gamma")
-    , "2026Q2": new Series("2026Q2", "Orion")
-    , "2026Q3": new Series("2026Q3", "Apollo")
+// Single source of truth for series and anomalies. Both the browser timeline
+// and the static anomalies.json feed (build-anomalies-feed.js) are built from
+// these two arrays, so anomaly dates and release links live in exactly one
+// place. `url` is the public release/overview page on https://ingress.com/news.
+const seriesData = [
+    { handle: "2025Q2", name: "+Theta", url: "https://ingress.com/news/2025-plustheta" }
+    , { handle: "2025Q3", name: "+Delta", url: "https://ingress.com/news/2025-plusdelta" }
+    , { handle: "2025Q4", name: "+Beta", url: "https://ingress.com/news/2025-plusbeta" }
+    , { handle: "2026Q1", name: "+Gamma", url: "https://ingress.com/news/2026-plusgamma" }
+    , { handle: "2026Q2", name: "Orion", url: "https://ingress.com/news/2026-orion" }
+    , { handle: "2026Q3", name: "Apollo", url: "https://ingress.com/news/2026-apollo" }
+];
+
+const anomalyData = [
+    { date: "2025/06/14", series: "2025Q2", subseries: "2", sites: "Perth, Chemnitz" }
+    , { date: "2025/08/16", series: "2025Q3", subseries: "1", sites: "Malacca, Portland" }
+    , { date: "2025/08/23", series: "2025Q3", subseries: "2", sites: "Gothenburg, Quebec" }
+    , { date: "2025/09/20", series: "2025Q3", subseries: "3", sites: "Denpasar, Cambridge" }
+    , { date: "2025/10/18", series: "2025Q4", subseries: "1", sites: "Valencia, São Paulo" }
+    , { date: "2025/10/25", series: "2025Q4", subseries: "2", sites: "Wellington, Houston" }
+    , { date: "2025/11/15", series: "2025Q4", subseries: "3", sites: "Taoyuan, The Hague" }
+    , { date: "2026/02/28", series: "2026Q1", subseries: "1", sites: "Lisbon, Charlotte" }
+    , { date: "2026/03/14", series: "2026Q1", subseries: "2", sites: "Hong Kong, Zagreb" }
+    , { date: "2026/03/21", series: "2026Q1", subseries: "3", sites: "Hyderabad, Buenos Aires" }
+    , { date: "2026/05/16", series: "2026Q2", subseries: "1", sites: "Sydney, Prague" }
+    , { date: "2026/05/30", series: "2026Q2", subseries: "2", sites: "Kure City, Jersey City" }
+    , { date: "2026/06/20", series: "2026Q2", subseries: "3", sites: "Geneva, Lima" }
+    , { date: "2026/07/18", series: "2026Q3", subseries: "1", sites: "Helsinki, Bogotá" }
+    , { date: "2026/08/22", series: "2026Q3", subseries: "2", sites: "Seoul, Paris" }
+    , { date: "2026/09/19", series: "2026Q3", subseries: "3", sites: "Singapore, Denver" }
+];
+
+const series = {};
+seriesData.forEach(s => { series[s.handle] = new Series(s.handle, s.name, s.url); });
+
+// The Anomaly objects (and the swag schedule they carry) are only built in the
+// browser, where dayjs and the swag schedule are loaded. The Node feed
+// generator only needs the raw data above, so this block is skipped there.
+let anomalies = [];
+let futureAnomalies = [];
+if (typeof dayjs !== "undefined" && typeof swag !== "undefined") {
+    anomalies = anomalyData.map(a => new Anomaly(a.date, series[a.series], a.subseries, a.sites, swag));
+    // Only surface anomalies whose date is today or later; past ones stay in
+    // anomalyData above for reference but are filtered out automatically.
+    const today = dayjs(new Date()).startOf("day");
+    futureAnomalies = anomalies.filter(anomaly => !anomaly.date.isBefore(today));
 }
-;
-
-const anomalies = [
-    new Anomaly('2025/06/14', series["2025Q2"], "2", "Perth, Chemnitz", swag)
-    , new Anomaly('2025/08/16', series["2025Q3"], "1", "Malacca, Portland", swag)
-    , new Anomaly('2025/08/23', series["2025Q3"], "2", "Gothenburg, Quebec", swag)
-    , new Anomaly('2025/09/20', series["2025Q3"], "3", "Denpasar, Cambridge", swag)
-    , new Anomaly('2025/10/18', series["2025Q4"], "1", "Valencia, São Paulo", swag)
-    , new Anomaly('2025/10/25', series["2025Q4"], "2", "Wellington, Houston", swag)
-    , new Anomaly('2025/11/15', series["2025Q4"], "3", "Taoyuan, The Hague", swag)
-    , new Anomaly('2026/02/28', series["2026Q1"], "1", "Lisbon, Charlotte", swag)
-    , new Anomaly('2026/03/14', series["2026Q1"], "2", "Hong Kong, Zagreb", swag)
-    , new Anomaly('2026/03/21', series["2026Q1"], "3", "Hyderabad, Buenos Aires", swag)
-    , new Anomaly('2026/05/16', series["2026Q2"], "1", "Sydney, Prague", swag)
-    , new Anomaly('2026/05/30', series["2026Q2"], "2", "Kure City, Jersey City", swag)
-    , new Anomaly('2026/06/20', series["2026Q2"], "3", "Geneva, Lima", swag)
-    , new Anomaly('2026/07/18', series["2026Q3"], "1", "Helsinki, Bogotá", swag)
-    , new Anomaly('2026/08/22', series["2026Q3"], "2", "Seoul, Paris", swag)
-    , new Anomaly('2026/09/19', series["2026Q3"], "3", "Singapore, Denver", swag)
-]
-;
-
-// Only surface anomalies whose date is today or later; past ones stay in the
-// array above for reference but are filtered out automatically.
-const today = dayjs(new Date()).startOf("day");
-const futureAnomalies = anomalies.filter(anomaly => !anomaly.date.isBefore(today));
 
 const ingress = { series: series, anomalies: futureAnomalies };
+
+// Expose the raw data to Node so build-anomalies-feed.js can generate the
+// static JSON feed without a browser, dayjs, or the swag schedule.
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = { seriesData, anomalyData };
+}

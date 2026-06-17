@@ -10,30 +10,14 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
 
-    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
-    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@8.5.1/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="https://unpkg.com/vis-timeline@8.5.1/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
 
-    <script type="text/javascript" src="https://unpkg.com/dayjs@latest/dayjs.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/dayjs@1.11.21/dayjs.min.js"></script>
 
     <link rel="stylesheet" href="swagtimeline.css" type="text/css" />
-    
-    <script type="text/javascript">
-      // $( function() {
-      //   var hashId = 0,
-      //       $accordion = $('#accordion');
-      //   if (window.location.hash) {
-      //       $accordion.children('h2').each(function (i) {
-      //           var txt = this.id;
-      //           if ( txt === 'h2' + window.location.hash ) {
-      //               hashId = i;
-      //           }
-      //       });
-      //   }
 
-      //   $( "#accordion" ).accordion(
-      //     {header: "h2", collapsible: true, active: hashId, heightStyle: "content"}
-      //   );
-      // } );
+    <script type="text/javascript">
       $( function() {
         $( "#tabs" ).tabs();
       } );
@@ -43,7 +27,6 @@
   <body>
     <h1>Anomaly Swag Timelines</h1>
 
-    <!-- <div id="accordion"></div> -->
     <div id="tabs">
       <ul id="nav">
       </ul>
@@ -52,7 +35,6 @@
     <script type="text/javascript" src="helper.js"></script>
     <script type="text/javascript" src="schedules/swag.js"></script>
     <script type="text/javascript" src="ingress.js"></script>
-    <!-- <script type="text/javascript" src="swagtimeline_accordion.js"></script> -->
     <script type="text/javascript" src="swagtimeline_tabs.js"></script>
   </body>
 </html>

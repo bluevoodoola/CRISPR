@@ -11,7 +11,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { seriesData, anomalyData } = require("./ingress.js");
+const { seriesData, anomalyData, normalizeSite } = require("./ingress.js");
 
 const seriesByHandle = Object.fromEntries(seriesData.map(s => [s.handle, s]));
 
@@ -36,7 +36,7 @@ const upcoming = anomalyData
         series: series.name,
         handle: series.handle,
         subseries: a.subseries,
-        sites: a.sites.split(",").map(s => s.trim()),
+        sites: a.sites.map(normalizeSite),
         release: series.url
     }));
 

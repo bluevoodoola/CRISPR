@@ -1,3 +1,14 @@
+// A site can be written as a plain "Name" string (no signup link yet) or as
+// { name, signup } once the Resistance signup URL is known. Normalize both to
+// the same { name, signup } shape so consumers (the timeline header and the
+// JSON feed) only ever deal with one form.
+function normalizeSite(site) {
+    if (typeof site === "string") {
+        return { name: site, signup: null };
+    }
+    return { name: site.name, signup: site.signup !== undefined ? site.signup : null };
+}
+
 class Series {
     constructor(handle, name, url) {
         this.handle = handle;
@@ -13,9 +24,9 @@ class Anomaly {
         this.date = dayjs(new Date(date));
         this.series = series;
         this.subseries = subseries;
-        this.sites = sites;
+        this.sites = sites.map(normalizeSite);
         this.uniqueid = `${this.series.handle}${this.subseries}`;
-        this.header = `${this.series.name} ${this.subseries}: ${this.date.format("YYYY-MMM-DD")} - ${this.sites}`;
+        this.header = `${this.series.name} ${this.subseries}: ${this.date.format("YYYY-MMM-DD")} - ${this.sites.map(s => s.name).join(", ")}`;
         this.schedule_swag = this.events(schedule_swag.events);
         this.schedule_swag.groups = schedule_swag.groups;
     }
@@ -136,23 +147,25 @@ const seriesData = [
     , { handle: "2026Q3", name: "Apollo", url: "https://ingress.com/news/2026-apollo" }
 ];
 
+// Each site is a plain "Name" string until its Resistance signup page is known,
+// then becomes { name: "Name", signup: "https://..." }. See normalizeSite().
 const anomalyData = [
-    { date: "2025/06/14", series: "2025Q2", subseries: "2", sites: "Perth, Chemnitz" }
-    , { date: "2025/08/16", series: "2025Q3", subseries: "1", sites: "Malacca, Portland" }
-    , { date: "2025/08/23", series: "2025Q3", subseries: "2", sites: "Gothenburg, Quebec" }
-    , { date: "2025/09/20", series: "2025Q3", subseries: "3", sites: "Denpasar, Cambridge" }
-    , { date: "2025/10/18", series: "2025Q4", subseries: "1", sites: "Valencia, São Paulo" }
-    , { date: "2025/10/25", series: "2025Q4", subseries: "2", sites: "Wellington, Houston" }
-    , { date: "2025/11/15", series: "2025Q4", subseries: "3", sites: "Taoyuan, The Hague" }
-    , { date: "2026/02/28", series: "2026Q1", subseries: "1", sites: "Lisbon, Charlotte" }
-    , { date: "2026/03/14", series: "2026Q1", subseries: "2", sites: "Hong Kong, Zagreb" }
-    , { date: "2026/03/21", series: "2026Q1", subseries: "3", sites: "Hyderabad, Buenos Aires" }
-    , { date: "2026/05/16", series: "2026Q2", subseries: "1", sites: "Sydney, Prague" }
-    , { date: "2026/05/30", series: "2026Q2", subseries: "2", sites: "Kure City, Jersey City" }
-    , { date: "2026/06/20", series: "2026Q2", subseries: "3", sites: "Geneva, Lima" }
-    , { date: "2026/07/18", series: "2026Q3", subseries: "1", sites: "Helsinki, Bogotá" }
-    , { date: "2026/08/22", series: "2026Q3", subseries: "2", sites: "Seoul, Paris" }
-    , { date: "2026/09/19", series: "2026Q3", subseries: "3", sites: "Singapore, Denver" }
+    { date: "2025/06/14", series: "2025Q2", subseries: "2", sites: ["Perth", "Chemnitz"] }
+    , { date: "2025/08/16", series: "2025Q3", subseries: "1", sites: ["Malacca", "Portland"] }
+    , { date: "2025/08/23", series: "2025Q3", subseries: "2", sites: ["Gothenburg", "Quebec"] }
+    , { date: "2025/09/20", series: "2025Q3", subseries: "3", sites: ["Denpasar", "Cambridge"] }
+    , { date: "2025/10/18", series: "2025Q4", subseries: "1", sites: ["Valencia", "São Paulo"] }
+    , { date: "2025/10/25", series: "2025Q4", subseries: "2", sites: ["Wellington", "Houston"] }
+    , { date: "2025/11/15", series: "2025Q4", subseries: "3", sites: ["Taoyuan", "The Hague"] }
+    , { date: "2026/02/28", series: "2026Q1", subseries: "1", sites: ["Lisbon", "Charlotte"] }
+    , { date: "2026/03/14", series: "2026Q1", subseries: "2", sites: ["Hong Kong", "Zagreb"] }
+    , { date: "2026/03/21", series: "2026Q1", subseries: "3", sites: ["Hyderabad", "Buenos Aires"] }
+    , { date: "2026/05/16", series: "2026Q2", subseries: "1", sites: ["Sydney", "Prague"] }
+    , { date: "2026/05/30", series: "2026Q2", subseries: "2", sites: ["Kure City", "Jersey City"] }
+    , { date: "2026/06/20", series: "2026Q2", subseries: "3", sites: [{ name: "Geneva", signup: "https://register.geneva.willbe.blue/" }, "Lima"] }
+    , { date: "2026/07/18", series: "2026Q3", subseries: "1", sites: [{ name: "Helsinki", signup: "https://register.helsinki.willbe.blue" }, { name: "Bogotá", signup: "https://laresistencia.co/" }] }
+    , { date: "2026/08/22", series: "2026Q3", subseries: "2", sites: ["Seoul", { name: "Paris", signup: "https://register.paris.willbe.blue/" }] }
+    , { date: "2026/09/19", series: "2026Q3", subseries: "3", sites: ["Singapore", "Denver"] }
 ];
 
 const series = {};
@@ -176,5 +189,5 @@ const ingress = { series: series, anomalies: futureAnomalies };
 // Expose the raw data to Node so build-anomalies-feed.js can generate the
 // static JSON feed without a browser, dayjs, or the swag schedule.
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = { seriesData, anomalyData };
+    module.exports = { seriesData, anomalyData, normalizeSite };
 }

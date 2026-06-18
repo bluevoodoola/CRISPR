@@ -83,12 +83,17 @@ place to edit anomaly/series facts:
 - `seriesData[]` — `{ handle, name, url }` where `url` is the public
   release/overview page on https://ingress.com/news.
 - `anomalyData[]` — `{ date: "YYYY/MM/DD", series: <handle>, subseries, sites }`.
+  `sites` is an **array**; each entry is a plain `"Name"` string until its
+  Resistance signup page is known, then `{ name, signup }`. `normalizeSite()`
+  collapses both forms to `{ name, signup }` (signup `null` when unknown), used
+  by the header rendering and the JSON feed alike.
 
 From these, `ingress.js` builds `Series` objects and (in the browser only)
 `Anomaly` objects + the `futureAnomalies` filter. The browser build is guarded
 by `typeof dayjs !== "undefined" && typeof swag !== "undefined"`, and the file
-`module.exports = { seriesData, anomalyData }` when required from Node — this is
-what lets the feed generator reuse the data without dayjs or the swag schedule.
+`module.exports = { seriesData, anomalyData, normalizeSite }` when required from
+Node — this is what lets the feed generator reuse the data (and the same site
+normalization) without dayjs or the swag schedule.
 
 Only **upcoming** anomalies (date today-or-later) surface in both the timeline
 and the feed; past entries stay in `anomalyData` for reference.

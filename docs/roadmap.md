@@ -5,24 +5,12 @@ issues/PRs when picked up.
 
 ## Planned
 
-- **Per-site registration links.** Expose a registration link for each anomaly
-  site (e.g. on the anomaly data and in `anomalies.json`).
+_(nothing open right now)_
 
-  Requires refactoring: an anomaly date can have **multiple sites**, and today
-  sites are a single comma-separated string in `anomalyData`
-  (`sites: "Helsinki, Bogotá"` in [swagtimeline/ingress.js](../swagtimeline/ingress.js)).
-  The feed generator
-  ([swagtimeline/build-anomalies-feed.js](../swagtimeline/build-anomalies-feed.js))
-  currently just splits that string into a names array. To attach a link per
-  site, model sites as structured entries instead, e.g.:
+## Done
 
-  ```js
-  sites: [
-    { name: "Helsinki", registration: "https://..." },
-    { name: "Bogotá",   registration: "https://..." }
-  ]
-  ```
-
-  Touch points to update: `anomalyData` shape, the `Anomaly` class /
-  `header` rendering, the feed generator's `sites` mapping, and any consumers of
-  the current `sites` string.
+- **Per-site signup links (structure).** `sites` in `anomalyData` is now an
+  array of `"Name"` strings or `{ name, signup }` entries, normalized via
+  `normalizeSite()`; the `signup` (Resistance signup page) link flows through to
+  `anomalies.json`. Remaining is **data entry only**: replace a site string with
+  `{ name, signup: "https://..." }` as each anomaly's signup page is published.

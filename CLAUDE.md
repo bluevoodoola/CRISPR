@@ -84,10 +84,13 @@ place to edit anomaly/series facts:
 - `seriesData[]` — `{ handle, name, url }` where `url` is the public
   release/overview page on https://ingress.com/news.
 - `anomalyData[]` — `{ date: "YYYY/MM/DD", series: <handle>, subseries, sites }`.
-  `sites` is an **array**; each entry is a plain `"Name"` string until its
-  Resistance signup page is known, then `{ name, signup }`. `normalizeSite()`
-  collapses both forms to `{ name, signup }` (signup `null` when unknown), used
-  by the header rendering and the JSON feed alike.
+  `sites` is an **array**; each entry is a plain `"Name"` string until a link is
+  known, then `{ name, signup, hype, shop }` carrying whichever links exist
+  (`signup` = Resistance signup page, `hype` = hype/community chat, `shop` = swag
+  shop). `normalizeSite()` collapses both forms to `{ name, signup, hype, shop }`
+  (each link `null` when unknown), used by the header rendering and the JSON feed
+  alike. The set of link kinds lives in `SITE_LINK_KINDS` — append to it to add a
+  new kind; `normalizeSite` and the feed pick it up automatically.
 
 From these, `ingress.js` builds `Series` objects and (in the browser only)
 `Anomaly` objects + the `futureAnomalies` filter. The browser build is guarded
@@ -115,13 +118,22 @@ Release overview pages follow `https://ingress.com/news/<year>-<series>`:
 `+`-prefixed series use the `plus<name>` slug; named series use the bare name.
 The news index is paginated (`/news?page=N`), oldest series on higher pages.
 
-### Site ↔ signup URL pattern
+### Site link patterns
 
-Observed (not guaranteed) for Resistance signup pages: most sites follow
-`https://register.<city>.willbe.blue/` (e.g. Helsinki, Geneva, Lima, Seoul,
-Paris). Some sites run their own domain — e.g. Bogotá uses
-`https://laresistencia.co/`. Always use the actual published link; treat the
-`register.<city>.willbe.blue` form only as a hint when you don't have one yet.
+A site can carry up to three links (`signup`, `hype`, `shop`); fill in whichever
+are published, leaving the rest unset (they normalize to `null`).
+
+- **signup** — Resistance signup page. Observed (not guaranteed): most sites
+  follow `https://register.<city>.willbe.blue/` (e.g. Helsinki, Geneva, Lima,
+  Seoul, Paris, Singapore). Some run their own domain — e.g. Bogotá uses
+  `https://laresistencia.co/`. Treat the `register.<city>.willbe.blue` form only
+  as a hint when you don't have one yet.
+- **hype** — hype/community chat (set up before signup opens for some sites).
+  e.g. Denver uses `https://res.blue/group/denver-anomaly-2026-non-secure`.
+- **shop** — swag shop link.
+
+Always use the actual published link, and don't put a non-signup URL in the
+`signup` field — a hype chat is `hype`, not a stand-in `signup`.
 
 ## Common tasks
 
@@ -141,10 +153,12 @@ it self-prunes past anomalies on the next deploy. `generatedAt` records when the
 upcoming set last *changed* (the generator is idempotent — re-running with no
 change reuses the previous timestamp, so output is byte-identical).
 
-**Add a site's Resistance signup link:** in `anomalyData`, change a site from a
-plain `"Name"` string to `{ name: "Name", signup: "https://..." }`. It flows
-into `anomalies.json` automatically; the timeline header is unaffected (it shows
-site names only). Mixed forms in one `sites` array are fine.
+**Add a site's link (signup / hype / shop):** in `anomalyData`, change a site
+from a plain `"Name"` string to an object carrying the known links, e.g.
+`{ name: "Name", signup: "https://..." }` or `{ name: "Name", hype: "https://..." }`
+(include any subset). Each flows into `anomalies.json` automatically; the
+timeline header is unaffected (it shows site names only). Mixed forms in one
+`sites` array are fine.
 
 **Change a production lead time / add a swag item step:** edit `events[]` in
 `schedules/swag.js`. New events that anchor to another event must appear after

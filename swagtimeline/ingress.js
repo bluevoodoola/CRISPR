@@ -1,12 +1,23 @@
-// A site can be written as a plain "Name" string (no signup link yet) or as
-// { name, signup } once the Resistance signup URL is known. Normalize both to
-// the same { name, signup } shape so consumers (the timeline header and the
-// JSON feed) only ever deal with one form.
+// The kinds of links a site can carry, in feed/display order. "signup" is the
+// Resistance signup page; "hype" is a hype/community chat; "shop" is the swag
+// shop. Add a new kind by appending here — normalizeSite and the JSON feed pick
+// it up automatically.
+const SITE_LINK_KINDS = ["signup", "hype", "shop"];
+
+// A site can be written as a plain "Name" string (no links yet) or as
+// { name, signup, hype, shop } once any of those URLs are known. Normalize both
+// to the same { name, signup, hype, shop } shape (each link null when unknown)
+// so consumers (the timeline header and the JSON feed) only ever deal with one
+// form.
 function normalizeSite(site) {
     if (typeof site === "string") {
-        return { name: site, signup: null };
+        site = { name: site };
     }
-    return { name: site.name, signup: site.signup !== undefined ? site.signup : null };
+    const out = { name: site.name };
+    SITE_LINK_KINDS.forEach(kind => {
+        out[kind] = site[kind] !== undefined ? site[kind] : null;
+    });
+    return out;
 }
 
 class Series {
@@ -147,8 +158,9 @@ const seriesData = [
     , { handle: "2026Q3", name: "Apollo", url: "https://ingress.com/news/2026-apollo" }
 ];
 
-// Each site is a plain "Name" string until its Resistance signup page is known,
-// then becomes { name: "Name", signup: "https://..." }. See normalizeSite().
+// Each site is a plain "Name" string until a link is known, then becomes
+// { name: "Name", signup/hype/shop: "https://..." } with whichever links exist.
+// See normalizeSite() and SITE_LINK_KINDS.
 const anomalyData = [
     { date: "2025/06/14", series: "2025Q2", subseries: "2", sites: ["Perth", "Chemnitz"] }
     , { date: "2025/08/16", series: "2025Q3", subseries: "1", sites: ["Malacca", "Portland"] }
@@ -165,7 +177,7 @@ const anomalyData = [
     , { date: "2026/06/20", series: "2026Q2", subseries: "3", sites: [{ name: "Geneva", signup: "https://register.geneva.willbe.blue/" }, { name: "Lima", signup: "https://register.lima.willbe.blue/" }] }
     , { date: "2026/07/18", series: "2026Q3", subseries: "1", sites: [{ name: "Helsinki", signup: "https://register.helsinki.willbe.blue" }, { name: "Bogotá", signup: "https://laresistencia.co/" }] }
     , { date: "2026/08/22", series: "2026Q3", subseries: "2", sites: [{ name: "Seoul", signup: "https://register.seoul.willbe.blue/" }, { name: "Paris", signup: "https://register.paris.willbe.blue/" }] }
-    , { date: "2026/09/19", series: "2026Q3", subseries: "3", sites: ["Singapore", "Denver"] }
+    , { date: "2026/09/19", series: "2026Q3", subseries: "3", sites: [{ name: "Singapore", signup: "https://register.singapore.willbe.blue/" }, { name: "Denver", hype: "https://res.blue/group/denver-anomaly-2026-non-secure" }] }
 ];
 
 const series = {};

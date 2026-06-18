@@ -115,6 +115,14 @@ Release overview pages follow `https://ingress.com/news/<year>-<series>`:
 `+`-prefixed series use the `plus<name>` slug; named series use the bare name.
 The news index is paginated (`/news?page=N`), oldest series on higher pages.
 
+### Site ↔ signup URL pattern
+
+Observed (not guaranteed) for Resistance signup pages: most sites follow
+`https://register.<city>.willbe.blue/` (e.g. Helsinki, Geneva, Lima, Seoul,
+Paris). Some sites run their own domain — e.g. Bogotá uses
+`https://laresistencia.co/`. Always use the actual published link; treat the
+`register.<city>.willbe.blue` form only as a hint when you don't have one yet.
+
 ## Common tasks
 
 **Add/update an anomaly or series:** edit `seriesData`/`anomalyData` in

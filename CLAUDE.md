@@ -191,6 +191,18 @@ timeline header is unaffected (it shows site names only). Mixed forms in one
 `schedules/swag.js`. New events that anchor to another event must appear after
 that event in the array.
 
+**Hypercube calculator game data:** `hypercubes/calculator.js` reads
+`INGRESS_ITEMS` (`STATS_POWERCUBE["8"].XM` and `STATS_HYPER[level].XM`).
+`hypercubes/game-data.js` populates that at runtime by fetching the external
+game-data service (`GAME_DATA_URL`, currently
+`https://legendre-web-production.up.railway.app/reference/game.json`) and
+adapting it in `adaptGameData()`. The coupling to the service's schema lives
+*only* there: it reads `items.power_cube.capacity_xm_by_level` and
+`levels[].hypercube_capacity`. If the service moves or changes shape, update
+`GAME_DATA_URL` / `adaptGameData()` — the calculator itself needn't change. The
+endpoint must stay CORS-enabled (`access-control-allow-origin`) for the browser
+fetch to work.
+
 ## Conventions
 
 - Vanilla ES (classes, `forEach`/`map`), no TypeScript, no framework.

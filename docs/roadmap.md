@@ -15,9 +15,9 @@ _Nothing currently planned._
   or the DOM. The swag-timeline layer (`ingress.js` — the `Anomaly` class,
   schedule resolution, `futureAnomalies`) and the JSON feed
   (`build-anomalies-feed.js`) both consume it; the dependency runs one way only.
-  A possible follow-up (not planned) is to physically relocate the service out
-  of `swagtimeline/`, but that would change the published feed URL
-  (`swagtimeline/anomalies.json`), so it's deliberately deferred.
+  The generated feed now publishes at the site root under `data/anomalies.json`
+  (was `swagtimeline/anomalies.json`) to reflect that it's a core-service
+  artifact, not part of the timeline.
 - **Per-site links (structure).** `sites` in `anomalyData` is now an array of
   `"Name"` strings or `{ name, signup, hype, shop }` entries, normalized via
   `normalizeSite()` (link kinds listed in `SITE_LINK_KINDS`); each link flows

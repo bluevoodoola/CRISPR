@@ -42,7 +42,13 @@ const upcoming = anomalyData
         release: series.url
     }));
 
-const outPath = path.join(__dirname, "anomalies.json");
+// The feed is a core data-service artifact, so it's published at the site root
+// under data/ (served as <site>/data/anomalies.json) rather than buried under
+// swagtimeline/. The folder is generated at deploy time and gitignored, so
+// create it if it isn't there yet.
+const dataDir = path.join(__dirname, "..", "data");
+fs.mkdirSync(dataDir, { recursive: true });
+const outPath = path.join(dataDir, "anomalies.json");
 
 // `generatedAt` marks when the upcoming set last *changed*, not every run. If
 // the existing feed already lists the same anomalies, reuse its timestamp so

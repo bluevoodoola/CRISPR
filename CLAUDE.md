@@ -12,7 +12,7 @@ is the **swag timeline**: a per-anomaly Gantt-style schedule that works backward
 from each anomaly's event date to derive design, ordering, production, shipping,
 and marketing deadlines.
 
-It also publishes **`swagtimeline/anomalies.json`**, a static machine-readable
+It also publishes **`data/anomalies.json`**, a static machine-readable
 feed of upcoming anomalies — series, per-site Resistance signup links, and the
 public release page on https://ingress.com/news.
 
@@ -31,8 +31,9 @@ swagtimeline/
   ingress.js                    Swag-timeline layer: Anomaly class + schedule resolution (consumes anomaly-data.js)
   swagtimeline_tabs.js          Renders one vis-timeline per upcoming anomaly
   swagtimeline.css              Styling (per-group .spt-* colors)
-  build-anomalies-feed.js       Node generator -> anomalies.json (reads anomaly-data.js only)
-  anomalies.json                Generated feed (gitignored; built at deploy time, not committed)
+  build-anomalies-feed.js       Node generator -> ../data/anomalies.json (reads anomaly-data.js only)
+data/
+  anomalies.json                Generated feed at the site root (gitignored; built at deploy time, not committed)
 .github/workflows/
   deploy-pages.yml              Builds the feed + deploys the site to GitHub Pages
 ```
@@ -57,8 +58,8 @@ layer (`ingress.js`) depends on it — never the reverse.
   `https://bluevoodoola.github.io/CRISPR/` (no custom domain).
 - **The gate is promotion to `publish`.** To release, advance `publish` to
   `main` (fast-forward/merge) and push it. That push triggers
-  `.github/workflows/deploy-pages.yml`, which generates `anomalies.json` and
-  deploys the site as a Pages artifact (Pages source = "GitHub Actions"). Nothing
+  `.github/workflows/deploy-pages.yml`, which generates `data/anomalies.json`
+  and deploys the site as a Pages artifact (Pages source = "GitHub Actions"). Nothing
   generated is committed; `main` and `publish` don't accumulate build commits.
 - `workflow_dispatch` re-deploys `publish` on demand. There is no cron.
 
@@ -157,7 +158,7 @@ feed locally first:
 node swagtimeline/build-anomalies-feed.js
 ```
 
-You do **not** commit `anomalies.json` — it's gitignored and built fresh at
+You do **not** commit `data/anomalies.json` — it's gitignored and built fresh at
 deploy time by `deploy-pages.yml`. Running the generator locally is only for
 previewing. The feed lists the anomalies that are "upcoming" at build time, so
 it self-prunes past anomalies on the next deploy. `generatedAt` records when the
@@ -187,7 +188,7 @@ that event in the array.
 
 ## Verifying changes
 
-- Feed: `node swagtimeline/build-anomalies-feed.js` and inspect `anomalies.json`.
+- Feed: `node swagtimeline/build-anomalies-feed.js` and inspect `data/anomalies.json`.
 - Browser render path (no browser needed): the schedule resolution can be
   exercised by loading `anomaly-data.js` + `schedules/swag.js` + `ingress.js` as
   one combined script in a Node `vm` context with a small `dayjs` shim supporting

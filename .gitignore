@@ -1,4 +1,4 @@
 /node_modules
 
 # Generated at deploy time by the Pages workflow; never committed.
-swagtimeline/anomalies.json
+/data/anomalies.json

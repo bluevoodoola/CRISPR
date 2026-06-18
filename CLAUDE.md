@@ -24,13 +24,14 @@ README.md
 CLAUDE.md
 docs/roadmap.md                 Lightweight roadmap of planned/done work
 swagtimeline/
-  index.html                    Loads CDN deps + the four scripts below, renders tabs
+  index.html                    Loads CDN deps + the five scripts below, renders tabs
   helper.js                     createElement() DOM helper
+  anomaly-data.js               CORE data service: Series + source-of-truth data + normalizeSite (isomorphic)
   schedules/swag.js             The swag schedule template: groups[] + events[] (DATA)
-  ingress.js                    Series/Anomaly classes + the source-of-truth data
+  ingress.js                    Swag-timeline layer: Anomaly class + schedule resolution (consumes anomaly-data.js)
   swagtimeline_tabs.js          Renders one vis-timeline per upcoming anomaly
   swagtimeline.css              Styling (per-group .spt-* colors)
-  build-anomalies-feed.js       Node generator -> anomalies.json
+  build-anomalies-feed.js       Node generator -> anomalies.json (reads anomaly-data.js only)
   anomalies.json                Generated feed (gitignored; built at deploy time, not committed)
 .github/workflows/
   deploy-pages.yml              Builds the feed + deploys the site to GitHub Pages
@@ -40,10 +41,13 @@ The site is **pure static files** (root `index.html` does a meta-refresh
 redirect to `swagtimeline/`). No bundler, no framework. Browser dependencies
 (jQuery/jQuery UI, vis-timeline, dayjs) are loaded from CDNs in
 `swagtimeline/index.html`. Scripts are plain classic `<script>` tags and rely on
-**shared top-level lexical scope** between files (e.g. `swag` from
-`schedules/swag.js` is read by `ingress.js`; `ingress` is read by
-`swagtimeline_tabs.js`) — load order in `index.html` matters:
-`helper.js` → `schedules/swag.js` → `ingress.js` → `swagtimeline_tabs.js`.
+**shared top-level lexical scope** between files (e.g. `anomalyData`/`series`
+from `anomaly-data.js` and `swag` from `schedules/swag.js` are read by
+`ingress.js`; `ingress` is read by `swagtimeline_tabs.js`) — load order in
+`index.html` matters: `helper.js` → `anomaly-data.js` → `schedules/swag.js` →
+`ingress.js` → `swagtimeline_tabs.js`. The dependency direction is deliberate:
+the core data service (`anomaly-data.js`) stands alone, and the swag-timeline
+layer (`ingress.js`) depends on it — never the reverse.
 
 ## Branches & deployment
 
@@ -62,7 +66,8 @@ redirect to `swagtimeline/`). No bundler, no framework. Browser dependencies
 
 `schedules/swag.js` defines a **schedule template** as `events[]`. Each event
 declares a `dependency` that anchors it relative to another point, and these are
-resolved into concrete dates per anomaly in `ingress.js`'s `Anomaly.events()`:
+resolved into concrete dates per anomaly in `ingress.js`'s `Anomaly.events()`
+(the swag-timeline layer; the anchoring data itself lives in `anomaly-data.js`):
 
 - `dependency.anchor.type`:
   - `anomaly-date` — relative to the anomaly's own date
@@ -78,8 +83,8 @@ keep that behavior; don't make resolution silently skip.
 
 ## Source of truth for anomaly data
 
-`swagtimeline/ingress.js` holds **two plain-data arrays** that are the single
-place to edit anomaly/series facts:
+`swagtimeline/anomaly-data.js` (the core data service) holds **two plain-data
+arrays** that are the single place to edit anomaly/series facts:
 
 - `seriesData[]` — `{ handle, name, url }` where `url` is the public
   release/overview page on https://ingress.com/news.
@@ -92,12 +97,18 @@ place to edit anomaly/series facts:
   alike. The set of link kinds lives in `SITE_LINK_KINDS` — append to it to add a
   new kind; `normalizeSite` and the feed pick it up automatically.
 
-From these, `ingress.js` builds `Series` objects and (in the browser only)
-`Anomaly` objects + the `futureAnomalies` filter. The browser build is guarded
-by `typeof dayjs !== "undefined" && typeof swag !== "undefined"`, and the file
-`module.exports = { seriesData, anomalyData, normalizeSite }` when required from
-Node — this is what lets the feed generator reuse the data (and the same site
-normalization) without dayjs or the swag schedule.
+`anomaly-data.js` also builds the `series` map (`Series` objects keyed by
+handle) — pure data, no dayjs. It is **isomorphic**: as a browser `<script>` it
+shares these names via top-level scope; under Node it does
+`module.exports = { SITE_LINK_KINDS, normalizeSite, Series, seriesData, anomalyData, series }`,
+which is what lets `build-anomalies-feed.js` reuse the data (and the same site
+normalization) without a browser, dayjs, or the swag schedule.
+
+The swag-timeline layer (`swagtimeline/ingress.js`) consumes this data: it
+builds the `Anomaly` objects + `futureAnomalies` filter (browser only, guarded
+by `typeof dayjs !== "undefined" && typeof swag !== "undefined"`) and exposes
+`ingress` for the tab renderer. It is **not** required from Node — the feed
+builds straight from the core service.
 
 Only **upcoming** anomalies (date today-or-later) surface in both the timeline
 and the feed; past entries stay in `anomalyData` for reference.
@@ -138,7 +149,7 @@ Always use the actual published link, and don't put a non-signup URL in the
 ## Common tasks
 
 **Add/update an anomaly or series:** edit `seriesData`/`anomalyData` in
-`swagtimeline/ingress.js` (the only place), commit to `main`, and promote to
+`swagtimeline/anomaly-data.js` (the only place), commit to `main`, and promote to
 `publish` when ready to release (the deploy rebuilds the feed). To preview the
 feed locally first:
 
@@ -169,16 +180,17 @@ that event in the array.
 - Vanilla ES (classes, `forEach`/`map`), no TypeScript, no framework.
 - Leading-comma formatting in the data arrays (`, { ... }` on its own line) —
   match it when adding entries.
-- Keep data isomorphic-safe: nothing at top level of `ingress.js` may call
-  `dayjs`/touch the DOM outside the `typeof` guard, or the Node generator breaks.
+- Keep the core data service isomorphic-safe: nothing at top level of
+  `anomaly-data.js` may call `dayjs`/touch the DOM, or the Node feed generator
+  breaks. dayjs/DOM/swag usage belongs in the `ingress.js` timeline layer.
 - UTF-8 throughout (site names like `Bogotá`, `São Paulo` appear in the data).
 
 ## Verifying changes
 
 - Feed: `node swagtimeline/build-anomalies-feed.js` and inspect `anomalies.json`.
 - Browser render path (no browser needed): the schedule resolution can be
-  exercised by loading `schedules/swag.js` + `ingress.js` as one combined script
-  in a Node `vm` context with a small `dayjs` shim supporting
+  exercised by loading `anomaly-data.js` + `schedules/swag.js` + `ingress.js` as
+  one combined script in a Node `vm` context with a small `dayjs` shim supporting
   `add(n,'day')`, `startOf('day')`, `isBefore`, `isAfter`, and
   `format('YYYY-MM-DD' | 'YYYY-MMM-DD')`. A passing check yields the expected
   `futureAnomalies` count and per-anomaly `schedule_swag` start/end.

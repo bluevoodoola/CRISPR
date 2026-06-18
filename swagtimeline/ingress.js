@@ -1,34 +1,16 @@
-// The kinds of links a site can carry, in feed/display order. "signup" is the
-// Resistance signup page; "hype" is a hype/community chat; "shop" is the swag
-// shop. Add a new kind by appending here — normalizeSite and the JSON feed pick
-// it up automatically.
-const SITE_LINK_KINDS = ["signup", "hype", "shop"];
-
-// A site can be written as a plain "Name" string (no links yet) or as
-// { name, signup, hype, shop } once any of those URLs are known. Normalize both
-// to the same { name, signup, hype, shop } shape (each link null when unknown)
-// so consumers (the timeline header and the JSON feed) only ever deal with one
-// form.
-function normalizeSite(site) {
-    if (typeof site === "string") {
-        site = { name: site };
-    }
-    const out = { name: site.name };
-    SITE_LINK_KINDS.forEach(kind => {
-        out[kind] = site[kind] !== undefined ? site[kind] : null;
-    });
-    return out;
-}
-
-class Series {
-    constructor(handle, name, url) {
-        this.handle = handle;
-        this.name = name;
-        // Link to the public release/overview page for this series on
-        // https://ingress.com/news (may be null if no release is published yet).
-        this.url = url !== undefined ? url : null;
-    }
-}
+// Swag timeline layer.
+//
+// Consumes the core anomaly data service (anomaly-data.js) plus the swag
+// schedule template (schedules/swag.js) to build a resolved per-anomaly swag
+// schedule, then exposes the upcoming anomalies for swagtimeline_tabs.js to
+// render. The dependency runs one way: this layer depends on the core data
+// service, never the reverse.
+//
+// Browser-only. It reads globals provided by earlier <script> tags
+// (seriesData/anomalyData/series/normalizeSite from anomaly-data.js, `swag` from
+// schedules/swag.js, plus dayjs), so load order in index.html matters:
+// anomaly-data.js -> schedules/swag.js -> ingress.js. The JSON feed builds
+// straight from the core data service and never loads this file.
 
 class Anomaly {
     constructor(date, series, subseries, sites, schedule_swag) {
@@ -56,7 +38,7 @@ class Anomaly {
                 case "anomaly-date":
                     anchordate = this.date;
                     switch ( event.dependency.type ) {
-                        case "start-relative": 
+                        case "start-relative":
                             if ( event.dependency["start-days-before"] !== undefined ) {
                                 start = anchordate.add(-event.dependency["start-days-before"], "day");
                             }
@@ -69,14 +51,14 @@ class Anomaly {
                             break;
                     }
                     break;
-                
+
                 case "event":
                     var anchorevent = events.find(e => e.id === event.dependency.anchor.id);
                     if ( anchorevent === undefined ) {
                         throw new Error(`Event "${event.id}" anchors to unknown event "${event.dependency.anchor.id}" (must be defined earlier in the schedule).`);
                     }
                     switch ( event.dependency.type ) {
-                        case "start-relative": 
+                        case "start-relative":
                             if ( event.dependency["start-days-before"] !== undefined ) {
                                 start = anchorevent.internal.startdate.add(-event.dependency["start-days-before"], "day");
                             }
@@ -87,7 +69,7 @@ class Anomaly {
                                 end = start.add(event["duration"], "day");
                             }
                             break;
-                        case "end-relative": 
+                        case "end-relative":
                             if ( event.dependency["start-days-before"] !== undefined ) {
                                 start = anchorevent.internal.enddate.add(-event.dependency["start-days-before"], "day");
                             }
@@ -98,7 +80,7 @@ class Anomaly {
                                 end = start.add(event["duration"], "day");
                             }
                             break;
-                        case "mid-relative": 
+                        case "mid-relative":
                             if ( event.dependency["start-days-before"] !== undefined ) {
                                 start = anchorevent.internal.startdate.add(anchorevent.internal.duration / 2.0 - event.dependency["start-days-before"], "day");
                             }
@@ -145,47 +127,9 @@ class Anomaly {
     }
 }
 
-// Single source of truth for series and anomalies. Both the browser timeline
-// and the static anomalies.json feed (build-anomalies-feed.js) are built from
-// these two arrays, so anomaly dates and release links live in exactly one
-// place. `url` is the public release/overview page on https://ingress.com/news.
-const seriesData = [
-    { handle: "2025Q2", name: "+Theta", url: "https://ingress.com/news/2025-plustheta" }
-    , { handle: "2025Q3", name: "+Delta", url: "https://ingress.com/news/2025-plusdelta" }
-    , { handle: "2025Q4", name: "+Beta", url: "https://ingress.com/news/2025-plusbeta" }
-    , { handle: "2026Q1", name: "+Gamma", url: "https://ingress.com/news/2026-plusgamma" }
-    , { handle: "2026Q2", name: "Orion", url: "https://ingress.com/news/2026-orion" }
-    , { handle: "2026Q3", name: "Apollo", url: "https://ingress.com/news/2026-apollo" }
-];
-
-// Each site is a plain "Name" string until a link is known, then becomes
-// { name: "Name", signup/hype/shop: "https://..." } with whichever links exist.
-// See normalizeSite() and SITE_LINK_KINDS.
-const anomalyData = [
-    { date: "2025/06/14", series: "2025Q2", subseries: "2", sites: ["Perth", "Chemnitz"] }
-    , { date: "2025/08/16", series: "2025Q3", subseries: "1", sites: ["Malacca", "Portland"] }
-    , { date: "2025/08/23", series: "2025Q3", subseries: "2", sites: ["Gothenburg", "Quebec"] }
-    , { date: "2025/09/20", series: "2025Q3", subseries: "3", sites: ["Denpasar", "Cambridge"] }
-    , { date: "2025/10/18", series: "2025Q4", subseries: "1", sites: ["Valencia", "São Paulo"] }
-    , { date: "2025/10/25", series: "2025Q4", subseries: "2", sites: ["Wellington", "Houston"] }
-    , { date: "2025/11/15", series: "2025Q4", subseries: "3", sites: ["Taoyuan", "The Hague"] }
-    , { date: "2026/02/28", series: "2026Q1", subseries: "1", sites: ["Lisbon", "Charlotte"] }
-    , { date: "2026/03/14", series: "2026Q1", subseries: "2", sites: ["Hong Kong", "Zagreb"] }
-    , { date: "2026/03/21", series: "2026Q1", subseries: "3", sites: ["Hyderabad", "Buenos Aires"] }
-    , { date: "2026/05/16", series: "2026Q2", subseries: "1", sites: ["Sydney", "Prague"] }
-    , { date: "2026/05/30", series: "2026Q2", subseries: "2", sites: ["Kure City", "Jersey City"] }
-    , { date: "2026/06/20", series: "2026Q2", subseries: "3", sites: [{ name: "Geneva", signup: "https://register.geneva.willbe.blue/" }, { name: "Lima", signup: "https://register.lima.willbe.blue/" }] }
-    , { date: "2026/07/18", series: "2026Q3", subseries: "1", sites: [{ name: "Helsinki", signup: "https://register.helsinki.willbe.blue" }, { name: "Bogotá", signup: "https://laresistencia.co/" }] }
-    , { date: "2026/08/22", series: "2026Q3", subseries: "2", sites: [{ name: "Seoul", signup: "https://register.seoul.willbe.blue/" }, { name: "Paris", signup: "https://register.paris.willbe.blue/" }] }
-    , { date: "2026/09/19", series: "2026Q3", subseries: "3", sites: [{ name: "Singapore", signup: "https://register.singapore.willbe.blue/" }, { name: "Denver", hype: "https://res.blue/group/denver-anomaly-2026-non-secure" }] }
-];
-
-const series = {};
-seriesData.forEach(s => { series[s.handle] = new Series(s.handle, s.name, s.url); });
-
-// The Anomaly objects (and the swag schedule they carry) are only built in the
-// browser, where dayjs and the swag schedule are loaded. The Node feed
-// generator only needs the raw data above, so this block is skipped there.
+// Build Anomaly objects (and the swag schedule they carry) from the core data
+// service. Guarded so that if this file is ever loaded without dayjs or the swag
+// schedule it stays inert instead of throwing at load time.
 let anomalies = [];
 let futureAnomalies = [];
 if (typeof dayjs !== "undefined" && typeof swag !== "undefined") {
@@ -197,9 +141,3 @@ if (typeof dayjs !== "undefined" && typeof swag !== "undefined") {
 }
 
 const ingress = { series: series, anomalies: futureAnomalies };
-
-// Expose the raw data to Node so build-anomalies-feed.js can generate the
-// static JSON feed without a browser, dayjs, or the swag schedule.
-if (typeof module !== "undefined" && module.exports) {
-    module.exports = { seriesData, anomalyData, normalizeSite };
-}

@@ -1,6 +1,8 @@
 // Generates the static public data feed `anomalies.json` from the single source
-// of truth in ingress.js (seriesData + anomalyData). Run after editing the
-// anomaly/series data:
+// of truth in the core anomaly data service, anomaly-data.js (seriesData +
+// anomalyData). It depends only on that core service — not the swag timeline
+// layer (ingress.js) — so no browser, dayjs, or swag schedule is involved. Run
+// after editing the anomaly/series data:
 //
 //     node swagtimeline/build-anomalies-feed.js
 //
@@ -11,7 +13,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { seriesData, anomalyData, normalizeSite } = require("./ingress.js");
+const { seriesData, anomalyData, normalizeSite } = require("./anomaly-data.js");
 
 const seriesByHandle = Object.fromEntries(seriesData.map(s => [s.handle, s]));
 

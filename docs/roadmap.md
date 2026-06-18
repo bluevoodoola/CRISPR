@@ -5,12 +5,16 @@ issues/PRs when picked up.
 
 ## Planned
 
-- **Surface per-site links in the swag timeline UI.** The site links
-  (`signup`/`hype`/`shop`) now exist in `anomalies.json` and on `anomaly.sites`,
-  but the timeline only shows site *names* (in the tab header). A per-tab
-  list/table linking each site's pages would expose them in the UI. Touch point:
-  `createAnomalyTimeline()` in `swagtimeline/swagtimeline_tabs.js` (render from
-  `anomaly.sites`, linking each non-null link in `SITE_LINK_KINDS`).
+- **Untangle the core anomaly data service from the swag timeline.** The
+  anomaly data service (series/anomaly data + `normalizeSite`, published as
+  `anomalies.json`) is a core service in its own right; the swag timeline is one
+  consumer of it. Today they're intermingled in `swagtimeline/ingress.js`, and
+  the dependency runs the wrong way — the core data's browser build is gated on
+  the swag schedule (`typeof swag !== "undefined"`) and the file lives under
+  `swagtimeline/`. Refactor so the core data stands alone with no knowledge of
+  swag, and the swag-timeline layer (the `Anomaly` class, schedule resolution,
+  `futureAnomalies`) depends on it — not the reverse. The feed generator already
+  consumes only the core pieces, so it should ride along cleanly.
 
 ## Done
 

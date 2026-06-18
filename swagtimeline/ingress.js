@@ -164,7 +164,7 @@ const anomalyData = [
     , { date: "2026/05/30", series: "2026Q2", subseries: "2", sites: ["Kure City", "Jersey City"] }
     , { date: "2026/06/20", series: "2026Q2", subseries: "3", sites: [{ name: "Geneva", signup: "https://register.geneva.willbe.blue/" }, { name: "Lima", signup: "https://register.lima.willbe.blue/" }] }
     , { date: "2026/07/18", series: "2026Q3", subseries: "1", sites: [{ name: "Helsinki", signup: "https://register.helsinki.willbe.blue" }, { name: "Bogotá", signup: "https://laresistencia.co/" }] }
-    , { date: "2026/08/22", series: "2026Q3", subseries: "2", sites: ["Seoul", { name: "Paris", signup: "https://register.paris.willbe.blue/" }] }
+    , { date: "2026/08/22", series: "2026Q3", subseries: "2", sites: [{ name: "Seoul", signup: "https://register.seoul.willbe.blue/" }, { name: "Paris", signup: "https://register.paris.willbe.blue/" }] }
     , { date: "2026/09/19", series: "2026Q3", subseries: "3", sites: ["Singapore", "Denver"] }
 ];
 

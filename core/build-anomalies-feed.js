@@ -4,7 +4,7 @@
 // layer (ingress.js) — so no browser, dayjs, or swag schedule is involved. Run
 // after editing the anomaly/series data:
 //
-//     node swagtimeline/build-anomalies-feed.js
+//     node core/build-anomalies-feed.js
 //
 // The feed exposes the *upcoming* anomalies (date today or later, matching the
 // swag timeline's own filter), each enriched with its series name and the link

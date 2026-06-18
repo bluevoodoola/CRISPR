@@ -41,9 +41,9 @@ jobs:
           node-version: '24'
 
       - name: Generate anomalies.json
-        run: node swagtimeline/build-anomalies-feed.js
+        run: node core/build-anomalies-feed.js
 
-      - name: Stage site (exclude VCS/CI and repo docs)
+      - name: Stage site (exclude VCS/CI, repo docs, and build tooling)
         run: |
           mkdir _site
           rsync -a \
@@ -55,6 +55,7 @@ jobs:
             --exclude='README.md' \
             --exclude='CLAUDE.md' \
             --exclude='docs' \
+            --exclude='core/build-anomalies-feed.js' \
             ./ _site/
 
       - name: Configure Pages

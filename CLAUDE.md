@@ -16,6 +16,11 @@ It also publishes **`data/anomalies.json`**, a static machine-readable
 feed of upcoming anomalies — series, per-site Resistance signup links, and the
 public release page on https://ingress.com/news.
 
+The repo hosts a second small tool, the **hypercube-equivalence calculator**
+(`hypercubes/`), and a shared **`core/`** layer of dependency-free Ingress
+reference data (anomaly data, item stats) that the apps consume. Apps depend on
+`core/`, never the reverse, and `core/` never depends on an app.
+
 ## Layout
 
 ```
@@ -23,15 +28,22 @@ index.html                      Root redirect -> swagtimeline/index.html
 README.md
 CLAUDE.md
 docs/roadmap.md                 Lightweight roadmap of planned/done work
-swagtimeline/
-  index.html                    Loads CDN deps + the five scripts below, renders tabs
+core/                           CORE Ingress reference data, shared by the apps below (no app/DOM deps)
+  anomaly-data.js               Series + source-of-truth anomaly data + normalizeSite (isomorphic: browser + Node)
+  build-anomalies-feed.js       Node generator -> ../data/anomalies.json (reads anomaly-data.js only; not served)
+  ingress_items.js              INGRESS_ITEMS: power/hypercube XM stats (browser; used by the hypercubes app)
+swagtimeline/                   The swag-timeline app (consumes core/anomaly-data.js)
+  index.html                    Loads CDN deps + the four scripts below, renders tabs
   helper.js                     createElement() DOM helper
-  anomaly-data.js               CORE data service: Series + source-of-truth data + normalizeSite (isomorphic)
   schedules/swag.js             The swag schedule template: groups[] + events[] (DATA)
-  ingress.js                    Swag-timeline layer: Anomaly class + schedule resolution (consumes anomaly-data.js)
+  ingress.js                    Swag-timeline layer: Anomaly class + schedule resolution (consumes core/anomaly-data.js)
   swagtimeline_tabs.js          Renders one vis-timeline per upcoming anomaly
   swagtimeline.css              Styling (per-group .spt-* colors)
-  build-anomalies-feed.js       Node generator -> ../data/anomalies.json (reads anomaly-data.js only)
+hypercubes/                     The hypercube-equivalence calculator app (consumes core/ingress_items.js)
+  index.html                    Loads CDN deps + the three scripts below
+  calculator.js                 Calculator class (reads INGRESS_ITEMS)
+  chart.js                      Canvas chart rendering
+  hypercubes.css                Styling
 data/
   anomalies.json                Generated feed at the site root (gitignored; built at deploy time, not committed)
 .github/workflows/
@@ -43,12 +55,13 @@ redirect to `swagtimeline/`). No bundler, no framework. Browser dependencies
 (jQuery/jQuery UI, vis-timeline, dayjs) are loaded from CDNs in
 `swagtimeline/index.html`. Scripts are plain classic `<script>` tags and rely on
 **shared top-level lexical scope** between files (e.g. `anomalyData`/`series`
-from `anomaly-data.js` and `swag` from `schedules/swag.js` are read by
+from `core/anomaly-data.js` and `swag` from `schedules/swag.js` are read by
 `ingress.js`; `ingress` is read by `swagtimeline_tabs.js`) — load order in
-`index.html` matters: `helper.js` → `anomaly-data.js` → `schedules/swag.js` →
-`ingress.js` → `swagtimeline_tabs.js`. The dependency direction is deliberate:
-the core data service (`anomaly-data.js`) stands alone, and the swag-timeline
-layer (`ingress.js`) depends on it — never the reverse.
+`swagtimeline/index.html` matters: `helper.js` → `../core/anomaly-data.js` →
+`schedules/swag.js` → `ingress.js` → `swagtimeline_tabs.js`. The dependency
+direction is deliberate: the core data service (`core/anomaly-data.js`) stands
+alone, and the swag-timeline layer (`ingress.js`) depends on it — never the
+reverse.
 
 ## Branches & deployment
 
@@ -84,7 +97,7 @@ keep that behavior; don't make resolution silently skip.
 
 ## Source of truth for anomaly data
 
-`swagtimeline/anomaly-data.js` (the core data service) holds **two plain-data
+`core/anomaly-data.js` (the core data service) holds **two plain-data
 arrays** that are the single place to edit anomaly/series facts:
 
 - `seriesData[]` — `{ handle, name, url }` where `url` is the public
@@ -150,12 +163,12 @@ Always use the actual published link, and don't put a non-signup URL in the
 ## Common tasks
 
 **Add/update an anomaly or series:** edit `seriesData`/`anomalyData` in
-`swagtimeline/anomaly-data.js` (the only place), commit to `main`, and promote to
+`core/anomaly-data.js` (the only place), commit to `main`, and promote to
 `publish` when ready to release (the deploy rebuilds the feed). To preview the
 feed locally first:
 
 ```
-node swagtimeline/build-anomalies-feed.js
+node core/build-anomalies-feed.js
 ```
 
 You do **not** commit `data/anomalies.json` — it's gitignored and built fresh at
@@ -188,9 +201,10 @@ that event in the array.
 
 ## Verifying changes
 
-- Feed: `node swagtimeline/build-anomalies-feed.js` and inspect `data/anomalies.json`.
+- Feed: `node core/build-anomalies-feed.js` and inspect `data/anomalies.json`.
 - Browser render path (no browser needed): the schedule resolution can be
-  exercised by loading `anomaly-data.js` + `schedules/swag.js` + `ingress.js` as
+  exercised by loading `core/anomaly-data.js` + `swagtimeline/schedules/swag.js`
+  + `swagtimeline/ingress.js` as
   one combined script in a Node `vm` context with a small `dayjs` shim supporting
   `add(n,'day')`, `startOf('day')`, `isBefore`, `isAfter`, and
   `format('YYYY-MM-DD' | 'YYYY-MMM-DD')`. A passing check yields the expected

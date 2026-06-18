@@ -13,8 +13,8 @@ from each anomaly's event date to derive design, ordering, production, shipping,
 and marketing deadlines.
 
 It also publishes **`swagtimeline/anomalies.json`**, a static machine-readable
-feed of upcoming anomalies (series, sites, and a link to the public release page
-on https://ingress.com/news).
+feed of upcoming anomalies — series, per-site Resistance signup links, and the
+public release page on https://ingress.com/news.
 
 ## Layout
 
@@ -22,6 +22,7 @@ on https://ingress.com/news).
 index.html                      Root redirect -> swagtimeline/index.html
 README.md
 CLAUDE.md
+docs/roadmap.md                 Lightweight roadmap of planned/done work
 swagtimeline/
   index.html                    Loads CDN deps + the four scripts below, renders tabs
   helper.js                     createElement() DOM helper
@@ -131,6 +132,11 @@ previewing. The feed lists the anomalies that are "upcoming" at build time, so
 it self-prunes past anomalies on the next deploy. `generatedAt` records when the
 upcoming set last *changed* (the generator is idempotent — re-running with no
 change reuses the previous timestamp, so output is byte-identical).
+
+**Add a site's Resistance signup link:** in `anomalyData`, change a site from a
+plain `"Name"` string to `{ name: "Name", signup: "https://..." }`. It flows
+into `anomalies.json` automatically; the timeline header is unaffected (it shows
+site names only). Mixed forms in one `sites` array are fine.
 
 **Change a production lead time / add a swag item step:** edit `events[]` in
 `schedules/swag.js`. New events that anchor to another event must appear after

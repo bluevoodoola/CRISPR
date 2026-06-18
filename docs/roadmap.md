@@ -17,9 +17,13 @@ _Nothing currently planned._
   resolution, `futureAnomalies`, renderer) consumes it; the dependency runs one
   way only. The generated feed publishes at the site root under
   `data/anomalies.json` (was `swagtimeline/anomalies.json`) to reflect that it's
-  a core-service artifact, not part of the timeline. `core/` is now the shared
-  data layer for both apps — the hypercubes calculator's `ingress_items.js`
-  (Ingress item XM stats) moved here too, so app folders hold only app code.
+  a core-service artifact, not part of the timeline.
+- **Hypercube calculator sources game stats from an external service.** The
+  bundled `ingress_items.js` data file is gone; `hypercubes/game-data.js` now
+  fetches the canonical Niantic stats at runtime from the external game-data
+  service (`/reference/game.json`, CORS-enabled) and adapts the slice the
+  calculator needs into the `INGRESS_ITEMS` shape it already expects. Removes the
+  owned-data dependency from that app; `core/` no longer carries item stats.
 - **Per-site links (structure).** `sites` in `anomalyData` is now an array of
   `"Name"` strings or `{ name, signup, hype, shop }` entries, normalized via
   `normalizeSite()` (link kinds listed in `SITE_LINK_KINDS`); each link flows

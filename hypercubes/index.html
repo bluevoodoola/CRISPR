@@ -7,7 +7,7 @@
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
-	<script type="text/javascript" src="../core/ingress_items.js"></script>
+	<script type="text/javascript" src="game-data.js"></script>
 	<link rel="stylesheet" href="hypercubes.css">
 	<script type="text/javascript" src="calculator.js"></script>
 	<script type="text/javascript" src="chart.js"></script>
@@ -55,6 +55,8 @@
 
 	<script>
 		function calc() {
+			if (!INGRESS_ITEMS) { return; }
+
 			const calculator = new Calculator($("#AgentLevel").val(), $("#TargetCount").val(), $("#HyperCount").val());
 
 			if (calculator.CanCalculate) {
@@ -106,7 +108,15 @@
 			initGenericSlider("#sliderHyperCount", "#HyperCount", 0, TargetCount, 1, CurrentCount, "lclabels")
 		};
 
-		$(function() {
+		$(async function() {
+			try {
+				await loadGameData();
+			} catch (error) {
+				console.error(error);
+				$("#inputs").prepend('<p class="error" style="color:#c00;">Could not load game data from the service. Please try again later.</p>');
+				return;
+			}
+
 			initGenericSlider("#sliderAgentLevel", "#AgentLevel", 8, 16, 1, 16, "");
 			initGenericSlider("#sliderTargetCubes", "#TargetCount", 100, 200, 10, 100, "");
 			initHyperSlider(0, 16);

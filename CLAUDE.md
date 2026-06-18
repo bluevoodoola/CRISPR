@@ -17,9 +17,11 @@ feed of upcoming anomalies — series, per-site Resistance signup links, and the
 public release page on https://ingress.com/news.
 
 The repo hosts a second small tool, the **hypercube-equivalence calculator**
-(`hypercubes/`), and a shared **`core/`** layer of dependency-free Ingress
-reference data (anomaly data, item stats) that the apps consume. Apps depend on
-`core/`, never the reverse, and `core/` never depends on an app.
+(`hypercubes/`), which pulls Ingress game stats at runtime from an external
+game-data service (see `hypercubes/game-data.js`). Dependency-free Ingress data
+that *we* own lives in the **`core/`** layer (currently the anomaly data
+service); apps depend on `core/`, never the reverse, and `core/` never depends
+on an app.
 
 ## Layout
 
@@ -28,10 +30,9 @@ index.html                      Root redirect -> swagtimeline/index.html
 README.md
 CLAUDE.md
 docs/roadmap.md                 Lightweight roadmap of planned/done work
-core/                           CORE Ingress reference data, shared by the apps below (no app/DOM deps)
+core/                           CORE Ingress data we own (no app/DOM deps)
   anomaly-data.js               Series + source-of-truth anomaly data + normalizeSite (isomorphic: browser + Node)
   build-anomalies-feed.js       Node generator -> ../data/anomalies.json (reads anomaly-data.js only; not served)
-  ingress_items.js              INGRESS_ITEMS: power/hypercube XM stats (browser; used by the hypercubes app)
 swagtimeline/                   The swag-timeline app (consumes core/anomaly-data.js)
   index.html                    Loads CDN deps + the four scripts below, renders tabs
   helper.js                     createElement() DOM helper
@@ -39,8 +40,9 @@ swagtimeline/                   The swag-timeline app (consumes core/anomaly-dat
   ingress.js                    Swag-timeline layer: Anomaly class + schedule resolution (consumes core/anomaly-data.js)
   swagtimeline_tabs.js          Renders one vis-timeline per upcoming anomaly
   swagtimeline.css              Styling (per-group .spt-* colors)
-hypercubes/                     The hypercube-equivalence calculator app (consumes core/ingress_items.js)
+hypercubes/                     The hypercube-equivalence calculator app
   index.html                    Loads CDN deps + the three scripts below
+  game-data.js                  Fetches game stats from the external service -> INGRESS_ITEMS
   calculator.js                 Calculator class (reads INGRESS_ITEMS)
   chart.js                      Canvas chart rendering
   hypercubes.css                Styling
